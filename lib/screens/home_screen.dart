@@ -122,13 +122,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       }
                                           , child: Icon(Icons.delete , color: Colors.red,)),
 ]),
-                                leading: Text('${filtered[index].date.day}/${filtered[index].date.month}/${filtered[index].date.year} ', style: TextStyle(
+                                leading:  Text('${filtered[index].date.day}/${filtered[index].date.month}/${filtered[index].date.year} ', style: TextStyle(
                                     fontSize: 13
                                 ),),
                                 title: Text(filtered[index].category , style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),),
-                                subtitle: Text('${filtered[index].amount} DT'),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(filtered[index].note,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis, // cuts long text with ...
+                                    ),
+                                    Text('${filtered[index].amount.toStringAsFixed(3)} DT',
+                                      style: TextStyle(fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
                               );
 
                             }),
