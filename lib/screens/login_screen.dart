@@ -84,7 +84,37 @@ class _LoginScreenState extends State<LoginScreen> {
       Column(
 
         children: [
-          Text('Welcome Back' , style: TextStyle(fontSize: 30),),
+          Text.rich(
+            TextSpan(
+              style: const TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.5,
+              ),
+              children: [
+                const TextSpan(
+                  text: 'Glass',
+                  style: TextStyle(
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(color: Colors.black26, offset: Offset(0, 3), blurRadius: 6),
+                    ],
+                  ),
+                ),
+                const TextSpan(
+                  text: 'Vault',
+                  style: TextStyle(
+                    color: Colors.cyanAccent,
+                    shadows: [
+                      Shadow(color: Colors.lightBlue, blurRadius: 12),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 35,),
+          Text('Welcome Back' , style: TextStyle(fontSize: 22),),
           const SizedBox(height: 35,),
           Container(
             padding: EdgeInsets.all(30),

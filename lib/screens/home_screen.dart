@@ -13,8 +13,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context ) {
     final expenses = ref.watch(expenseProvider);
-      final filtered = selectedCategory == 'All' ?expenses
-      :expenses.where((e)=>e.category==selectedCategory).toList();
+     final filtered = selectedCategory == 'All'?expenses
+     :expenses.where((e)=>e.category==selectedCategory).toList();
     double total = expenses.fold(0.0, (sum , expense) => sum +expense.amount);
       return Scaffold(
         appBar: AppBar(
@@ -133,7 +133,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   children: [
                                     Text(filtered[index].note,
                                       maxLines: 1,
-                                      overflow: TextOverflow.ellipsis, // cuts long text with ...
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                     Text('${filtered[index].amount.toStringAsFixed(3)} DT',
                                       style: TextStyle(fontWeight: FontWeight.w500),

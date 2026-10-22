@@ -129,28 +129,28 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
               borderRadius: BorderRadius.circular(20)
             ),
             child:
-                DropdownButtonHideUnderline(child:
-          DropdownButton<String>(
-            padding: EdgeInsets.all(5),
-
-            isExpanded: true,
-            icon: Icon(Icons.keyboard_arrow_down),
-            dropdownColor: Colors.white.withValues(alpha: 0.8),
-            borderRadius: BorderRadius.circular(20),
-            value: item,
+            DropdownButtonHideUnderline(child:
+            DropdownButton<String>(
+              padding: EdgeInsets.all(5),
+              isExpanded: true,
+              icon: Icon(Icons.keyboard_arrow_down),
+              dropdownColor: Colors.white.withValues(alpha: 0.8),
+              borderRadius: BorderRadius.circular(20),
+              value: item,
               onChanged: (String? newValue) {
                 setState(() {
-                 item = newValue;
+                  item = newValue;
                 });
               },
-            items: [
-              for(String item in categories)
-                DropdownMenuItem(
-                value: item,
-                  child:
-                  Text(item),)
-            ], hint: Text('Category'),
-          ),)),
+              items: [
+                for(String item in categories)
+                  DropdownMenuItem(
+                    value: item,
+                    child:
+                    Text(item),)
+              ], hint: Text('Category'),
+            ),)),
+
           const SizedBox(height: 30,),
           SizedBox(width: double.infinity,
             child:

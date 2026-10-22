@@ -16,6 +16,7 @@ Future<void> main() async {
   );
   runApp
     (ProviderScope(child: MaterialApp(
+    title: 'GlassVault',
     debugShowCheckedModeBanner: false,
     home: FirebaseAuth.instance.currentUser != null ? HomeScreen() : LoginScreen(),
     routes: {

@@ -39,7 +39,7 @@ class _SignupScreenState extends State<SignupScreen> {
       Column(
 mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Create an account' , style: TextStyle(fontSize: 30),),
+          Text('Create an account' , style: TextStyle(fontSize: 22),),
           const SizedBox(height: 35,),
 
           Container(
