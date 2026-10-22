@@ -1,31 +1,37 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/repositories/expense_repository.dart';
-import 'package:flutter_riverpod/legacy.dart';
 
-class ExpenseProvider extends StateNotifier<List<Expense>> {
-  ExpenseProvider():super([]){
-    loadExpenses();
+
+class ExpenseListNotifier extends StreamNotifier<List<Expense>> {
+  @override
+  Stream<List<Expense>> build() {
+
+    return ref.watch(expenseRepositoryProvider).watchExpenses();
   }
 
-  final _repository = ExpenseRepository();
+  Future<void> deleteExpense(String id) async {
+    await ref.read(expenseRepositoryProvider).deleteExpense(id);
+  }
+}
 
-  void loadExpenses(){
-    _repository.getExpenses().listen((expenses){
-      state = expenses;
-      });
+final expenseListProvider = StreamNotifierProvider<ExpenseListNotifier, List<Expense>>(
+  ExpenseListNotifier.new,
+);
+
+
+class AddExpenseNotifier extends AsyncNotifier<void> {
+  @override
+  Future<void> build() async {
+
   }
 
-  void addExpense(Expense expense){
-    _repository.addExpense(expense);
-  }
+  Future<void> submitExpense(Expense expense) async {
 
-  void updateExpense(Expense expense){
-    _repository.updateExpense(expense);
+    await ref.read(expenseRepositoryProvider).addExpense(expense);
   }
-  void deleteExpense(String id ){
-    _repository.deleteExpense(id);
-  }
+}
 
-}final expenseProvider = StateNotifierProvider<ExpenseProvider , List<Expense>>(
-    (ref)=>ExpenseProvider(),
+final addExpenseProvider = AsyncNotifierProvider<AddExpenseNotifier, void>(
+  AddExpenseNotifier.new,
 );
