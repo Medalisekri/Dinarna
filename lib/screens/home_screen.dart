@@ -1,6 +1,4 @@
-import 'dart:math';
-
-import 'package:expense_tracker/screens/add_expenses_screen.dart';
+// screens/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,42 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/providers/expense_provider.dart';
 import 'package:expense_tracker/core/widgets/skeleton_loader.dart';
-
+import 'package:expense_tracker/core/theme/app_theme.dart';
 import '../core/router/app.routes.dart';
 import '../providers/month_provider.dart';
 
-
-class CategoryHelper {
-  static final List<String> all = [
-    'All', 'Food', 'Health', 'Shopping', 'Transport', 'Other',
-  ];
-
-  static IconData icon(String category) {
-    switch (category.toLowerCase()) {
-      case 'food':     return Icons.restaurant_rounded;
-      case 'health':   return Icons.favorite_rounded;
-      case 'shopping': return Icons.shopping_bag_rounded;
-      case 'transport': return Icons.directions_car_rounded;
-      default:         return Icons.category_rounded;
-    }
-  }
-
-  static Color color(String category) {
-    switch (category.toLowerCase()) {
-      case 'food':     return Colors.orange;
-      case 'health':   return Colors.pink;
-      case 'shopping': return Colors.purple;
-      case 'transport': return Colors.blue;
-      default:         return Colors.grey;
-    }
-  }
-}
-
-
-
 class HomeScreen extends ConsumerWidget {
-  final Expense? expense;
-  const HomeScreen({super.key, this.expense});
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,19 +30,23 @@ class HomeScreen extends ConsumerWidget {
           return _HomeContent(expenses: expenses);
         },
       ),
-
-      floatingActionButton: FloatingActionButton(onPressed: ()=> context.push(AppRoutes.addExpense) , child: Icon(Icons.add),),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.push(AppRoutes.addExpense),
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return AppBar(
       automaticallyImplyLeading: false,
       title: Text(
         'GlassVault',
-        style: TextStyle(
+        style: theme.textTheme.headlineSmall?.copyWith(
           fontWeight: FontWeight.bold,
-          color: Theme.of(context).colorScheme.onSurface,
+          color: theme.colorScheme.onSurface,
         ),
       ),
       actions: [
@@ -84,15 +56,13 @@ class HomeScreen extends ConsumerWidget {
           },
           icon: Icon(
             Icons.logout_rounded,
-            color: Theme.of(context).colorScheme.onSurface,
+            color: theme.colorScheme.onSurface,
           ),
         ),
       ],
     );
   }
 }
-
-
 
 class _ErrorState extends StatelessWidget {
   final String message;
@@ -102,6 +72,8 @@ class _ErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -111,19 +83,19 @@ class _ErrorState extends StatelessWidget {
             Icon(
               Icons.cloud_off_rounded,
               size: 64,
-              color: Theme.of(context).colorScheme.outline,
+              color: theme.colorScheme.outline,
             ),
             const SizedBox(height: 16),
             Text(
               'Something went wrong',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.outline,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.outline,
               ),
             ),
             const SizedBox(height: 24),
@@ -139,13 +111,13 @@ class _ErrorState extends StatelessWidget {
   }
 }
 
-
-
 class _EmptyState extends StatelessWidget {
   const _EmptyState();
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -154,27 +126,27 @@ class _EmptyState extends StatelessWidget {
             width: 120,
             height: 120,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withAlpha(20),
+              color: theme.colorScheme.primary.withAlpha(20),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.receipt_long_rounded,
               size: 60,
-              color: Theme.of(context).colorScheme.primary,
+              color: theme.colorScheme.primary,
             ),
           ),
           const SizedBox(height: 24),
           Text(
             'No expenses yet',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Tap + to add your first expense',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.outline,
             ),
           ),
         ],
@@ -182,8 +154,6 @@ class _EmptyState extends StatelessWidget {
     );
   }
 }
-
-
 
 class _HomeContent extends ConsumerStatefulWidget {
   final List<Expense> expenses;
@@ -217,8 +187,6 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Column(
       children: [
         _MonthNavigator(),
@@ -226,13 +194,9 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
           selected: _selectedCategory,
           onSelected: (cat) => setState(() => _selectedCategory = cat),
         ),
-
         const SizedBox(height: 8),
-
         _SummaryCard(total: _total),
-
         const SizedBox(height: 8),
-
         Expanded(
           child: _filteredByCategory.isEmpty
               ? _NoResultsInMonth()
@@ -250,12 +214,12 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
   }
 }
 
-
 class _MonthNavigator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final monthNotifier = ref.watch(monthProvider.notifier);
     final monthLabel = ref.watch(monthProvider.notifier).label;
+    final theme = Theme.of(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -266,13 +230,12 @@ class _MonthNavigator extends ConsumerWidget {
             onPressed: () => monthNotifier.previous(),
             icon: const Icon(Icons.chevron_left_rounded),
             style: IconButton.styleFrom(
-              backgroundColor:
-              Theme.of(context).colorScheme.surfaceContainerHighest,
+              backgroundColor: theme.colorScheme.surfaceContainerHighest,
             ),
           ),
           Text(
             monthLabel,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -280,8 +243,7 @@ class _MonthNavigator extends ConsumerWidget {
             onPressed: () => monthNotifier.next(),
             icon: const Icon(Icons.chevron_right_rounded),
             style: IconButton.styleFrom(
-              backgroundColor:
-              Theme.of(context).colorScheme.surfaceContainerHighest,
+              backgroundColor: theme.colorScheme.surfaceContainerHighest,
             ),
           ),
         ],
@@ -289,7 +251,6 @@ class _MonthNavigator extends ConsumerWidget {
     );
   }
 }
-
 
 class _CategoryFilter extends StatelessWidget {
   final String selected;
@@ -303,16 +264,17 @@ class _CategoryFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final categories = ['All', 'Food', 'Health', 'Shopping', 'Transport', 'Other'];
 
     return SizedBox(
       height: 44,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: CategoryHelper.all.length,
+        itemCount: categories.length,
         separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
-          final category = CategoryHelper.all[index];
+          final category = categories[index];
           final isSelected = selected == category;
           final isAll = category == 'All';
 
@@ -332,22 +294,21 @@ class _CategoryFilter extends StatelessWidget {
                 children: [
                   if (!isAll) ...[
                     Icon(
-                      CategoryHelper.icon(category),
+                      AppTheme.getCategoryIcon(category),
                       size: 16,
                       color: isSelected
-                          ? Colors.white
-                          : CategoryHelper.color(category),
+                          ? theme.colorScheme.onPrimary
+                          : AppTheme.getCategoryColor(category),
                     ),
                     const SizedBox(width: 6),
                   ],
                   Text(
                     category,
-                    style: TextStyle(
+                    style: theme.textTheme.bodySmall?.copyWith(
                       color: isSelected
-                          ? Colors.white
+                          ? theme.colorScheme.onPrimary
                           : theme.colorScheme.onSurface,
-                      fontWeight:
-                      isSelected ? FontWeight.w600 : FontWeight.normal,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                       fontSize: 13,
                     ),
                   ),
@@ -360,8 +321,6 @@ class _CategoryFilter extends StatelessWidget {
     );
   }
 }
-
-
 
 class _SummaryCard extends StatelessWidget {
   final double total;
@@ -402,7 +361,7 @@ class _SummaryCard extends StatelessWidget {
               Text(
                 'Total Spent',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white70,
+                  color: theme.colorScheme.onPrimary.withAlpha(180),
                 ),
               ),
               const SizedBox(height: 4),
@@ -414,7 +373,7 @@ class _SummaryCard extends StatelessWidget {
                   return Text(
                     '${value.toStringAsFixed(3)} DT',
                     style: theme.textTheme.headlineSmall?.copyWith(
-                      color: Colors.white,
+                      color: theme.colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   );
@@ -425,12 +384,12 @@ class _SummaryCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white.withAlpha(30),
+              color: theme.colorScheme.onPrimary.withAlpha(30),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.account_balance_wallet_rounded,
-              color: Colors.white,
+              color: theme.colorScheme.onPrimary,
               size: 32,
             ),
           ),
@@ -440,11 +399,11 @@ class _SummaryCard extends StatelessWidget {
   }
 }
 
-
-
 class _NoResultsInMonth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -452,13 +411,13 @@ class _NoResultsInMonth extends StatelessWidget {
           Icon(
             Icons.search_off_rounded,
             size: 48,
-            color: Theme.of(context).colorScheme.outline,
+            color: theme.colorScheme.outline,
           ),
           const SizedBox(height: 12),
           Text(
             'No expenses this month',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: theme.colorScheme.outline,
             ),
           ),
         ],
@@ -466,7 +425,6 @@ class _NoResultsInMonth extends StatelessWidget {
     );
   }
 }
-
 
 class _SwipeableExpenseTile extends ConsumerWidget {
   final Expense expense;
@@ -476,7 +434,7 @@ class _SwipeableExpenseTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final categoryColor = CategoryHelper.color(expense.category);
+    final categoryColor = AppTheme.getCategoryColor(expense.category);
 
     return Dismissible(
       key: Key(expense.id),
@@ -486,10 +444,13 @@ class _SwipeableExpenseTile extends ConsumerWidget {
         padding: const EdgeInsets.only(right: 20),
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: Colors.red.shade400,
+          color: theme.colorScheme.error,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
+        child: Icon(
+          Icons.delete_outline_rounded,
+          color: theme.colorScheme.onError,
+        ),
       ),
       confirmDismiss: (direction) async {
         return await showDialog<bool>(
@@ -506,7 +467,7 @@ class _SwipeableExpenseTile extends ConsumerWidget {
               ),
               FilledButton(
                 style: FilledButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: theme.colorScheme.error,
                 ),
                 onPressed: () => Navigator.pop(context, true),
                 child: const Text('Delete'),
@@ -547,13 +508,12 @@ class _SwipeableExpenseTile extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(
-                CategoryHelper.icon(expense.category),
+                AppTheme.getCategoryIcon(expense.category),
                 color: categoryColor,
                 size: 24,
               ),
             ),
             const SizedBox(width: 12),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -583,7 +543,6 @@ class _SwipeableExpenseTile extends ConsumerWidget {
                 ],
               ),
             ),
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -591,7 +550,7 @@ class _SwipeableExpenseTile extends ConsumerWidget {
                   '-${expense.amount.toStringAsFixed(3)} DT',
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: Colors.red.shade400,
+                    color: theme.colorScheme.error,
                   ),
                 ),
                 const SizedBox(height: 4),

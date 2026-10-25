@@ -1,9 +1,11 @@
+// screens/add_expenses_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/providers/expense_provider.dart';
+import 'package:expense_tracker/core/theme/app_theme.dart';
 
 class AddExpensesScreen extends ConsumerStatefulWidget {
   final Expense? expense;
@@ -57,7 +59,6 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
   }
 
   Future<void> _saveExpense() async {
-
     if (!_formKey.currentState!.validate()) return;
 
     final amount = double.tryParse(_amountController.text.trim()) ?? 0;
@@ -72,7 +73,6 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
       userId: '',
     );
 
-
     try {
       if (widget.expense != null) {
         await ref.read(expenseProvider.notifier).updateExpense(expense);
@@ -80,13 +80,14 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
         await ref.read(expenseProvider.notifier).addExpense(expense);
       }
 
-
       if (mounted) context.pop();
-
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Failed to save: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
         );
       }
     }
@@ -100,7 +101,6 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? 'Edit Expense' : 'Add Expense'),
-
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -110,6 +110,7 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+
                 TextFormField(
                   controller: _amountController,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -119,7 +120,10 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
                   style: theme.textTheme.headlineSmall,
                   decoration: InputDecoration(
                     labelText: 'Amount (DT)',
-                    prefixIcon: const Icon(Icons.monetization_on_outlined),
+                    prefixIcon: Icon(
+                      Icons.monetization_on_outlined,
+                      color: theme.colorScheme.primary,
+                    ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
                   ),
                   validator: (value) {
@@ -131,15 +135,28 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
                 ),
                 const SizedBox(height: 20),
 
+
                 DropdownButtonFormField<String>(
                   value: _selectedCategory,
                   decoration: InputDecoration(
                     labelText: 'Category',
-                    prefixIcon: const Icon(Icons.category_outlined),
+                    prefixIcon: Icon(
+                      AppTheme.getCategoryIcon(_selectedCategory),
+                      color: AppTheme.getCategoryColor(_selectedCategory),
+                    ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
                   ),
                   items: _categories.map((cat) {
-                    return DropdownMenuItem(value: cat, child: Text(cat));
+                    return DropdownMenuItem(
+                      value: cat,
+                      child: Row(
+                        children: [
+
+                          const SizedBox(width: 8),
+                          Text(cat),
+                        ],
+                      ),
+                    );
                   }).toList(),
                   onChanged: (val) => setState(() => _selectedCategory = val!),
                 ),
@@ -152,7 +169,10 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
                   child: InputDecorator(
                     decoration: InputDecoration(
                       labelText: 'Date',
-                      prefixIcon: const Icon(Icons.calendar_today),
+                      prefixIcon: Icon(
+                        Icons.calendar_today,
+                        color: theme.colorScheme.primary,
+                      ),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
                     ),
                     child: Text(
@@ -170,7 +190,10 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
                   maxLines: 3,
                   decoration: InputDecoration(
                     labelText: 'Note (Optional)',
-                    prefixIcon: const Icon(Icons.notes_outlined),
+                    prefixIcon: Icon(
+                      Icons.notes_outlined,
+                      color: theme.colorScheme.primary,
+                    ),
                     alignLabelWithHint: true,
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
                   ),
@@ -190,7 +213,6 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
     );
   }
 }
-
 
 class _SaveButton extends StatefulWidget {
   final bool isEditing;
@@ -218,6 +240,8 @@ class _SaveButtonState extends State<_SaveButton> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return FilledButton(
       onPressed: _isLoading ? null : _handlePress,
       style: FilledButton.styleFrom(
@@ -225,14 +249,19 @@ class _SaveButtonState extends State<_SaveButton> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       child: _isLoading
-          ? const SizedBox(
+          ? SizedBox(
         width: 20,
         height: 20,
-        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          color: theme.colorScheme.onPrimary,
+        ),
       )
           : Text(
         widget.isEditing ? 'Update Expense' : 'Add Expense',
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        style: theme.textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

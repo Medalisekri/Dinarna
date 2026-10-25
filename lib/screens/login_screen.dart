@@ -1,13 +1,10 @@
+// screens/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:expense_tracker/services/auth_services.dart';
-
-
-import '../core/helpers/auth_error.dart';
-import '../core/router/app.routes.dart';
-import '../providers/auth_provider.dart';
+import 'package:expense_tracker/core/helpers/auth_error.dart';
+import 'package:expense_tracker/core/router/app.routes.dart';
+import 'package:expense_tracker/providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -21,8 +18,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-
-  bool _isLoading = false;
   bool _obscurePassword = true;
   String? _generalError;
 
@@ -33,7 +28,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-
   bool _isValidEmail(String email) {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
   }
@@ -41,59 +35,42 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
+    // No need to manage _isLoading manually! The provider does it.
     await ref.read(authProvider.notifier).login(
       _emailController.text.trim(),
       _passwordController.text.trim(),
     );
-
-    final authState = ref.read(authProvider);
-
-    authState.whenOrNull(
-      error: (error, stack) {
-        setState(() => _generalError = getLoginErrorMessage(error.toString()));
-      },
-      data: (_) {
-      },
-    );
   }
+
   Future<void> _googleSignIn() async {
-    if (_isLoading) return;
-    setState(() => _isLoading = true);
-   await ref.read(authProvider.notifier).googleSignIn();
+    await ref.read(authProvider.notifier).googleSignIn();
   }
-
-
 
   void _showResetDialog() {
     final emailCtrl = TextEditingController();
     final formKey = GlobalKey<FormState>();
+    final theme = Theme.of(context); // Grab theme for dialog
 
     showDialog(
       context: context,
       builder: (ctx) {
-        bool isLoading = false;
+        bool isDialogLoading = false;
         return StatefulBuilder(
           builder: (ctx, setDialogState) => AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             title: Column(
               children: [
                 Container(
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: Colors.blueAccent,
+                    color: theme.colorScheme.primaryContainer,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.lock_reset_outlined,
-                      size: 32, color: Colors.black),
+                  child: Icon(Icons.lock_reset_outlined, size: 32, color: theme.colorScheme.onPrimaryContainer),
                 ),
                 const SizedBox(height: 16),
-                const Text('Reset Password',
-                    style: TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.w700)),
-                const SizedBox(height: 8),
-
+                Text('Reset Password', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
               ],
             ),
             content: Form(
@@ -104,24 +81,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 decoration: InputDecoration(
                   hintText: 'Email',
                   prefixIcon: const Icon(Icons.email_outlined, size: 20),
-                  filled: true,
-                  fillColor: Colors.grey[50],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey[200]!),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.deepPurple),
-                  ),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Enter your email';
-                  if (!v.contains('@')) return 'Invalid email';
+                  if (!_isValidEmail(v)) return 'Invalid email';
                   return null;
                 },
               ),
@@ -129,51 +93,42 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text('Cancel',
-                    style: TextStyle(color: Colors.deepPurple)),
+                child: Text('Cancel', style: TextStyle(color: theme.colorScheme.primary)),
               ),
-              ElevatedButton(
+              FilledButton(
                 onPressed: () async {
                   if (!formKey.currentState!.validate()) return;
 
-                  setDialogState(() => isLoading = true);
+                  setDialogState(() => isDialogLoading = true);
                   try {
-                    await ref.read(authProvider.notifier).resetPassword(
-                        emailCtrl.text.trim());
+                    await ref.read(authProvider.notifier).resetPassword(emailCtrl.text.trim());
 
-                    if (ctx.mounted) {
-                      Navigator.pop(ctx);
+                    if (ctx.mounted) Navigator.pop(ctx);
+                    if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Reset link sent to your email, check spam if it is not there'),
-                          backgroundColor: Colors.green,
+                        SnackBar(
+                          content: const Text('Reset link sent! Check your inbox (and spam).'),
+                          backgroundColor: Colors.green[600],
+                          behavior: SnackBarBehavior.floating,
                         ),
                       );
                     }
                   } catch (e) {
-                    if (ctx.mounted) {
+                    if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(e.toString()), backgroundColor: Colors.redAccent),
+                        SnackBar(content: Text(e.toString()), backgroundColor: theme.colorScheme.error, behavior: SnackBarBehavior.floating),
                       );
                     }
                   } finally {
-                    if (ctx.mounted) {
-                      setDialogState(() => isLoading = false);
-                    }
+                    if (ctx.mounted) setDialogState(() => isDialogLoading = false);
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
+                style: FilledButton.styleFrom(
                   minimumSize: const Size(0, 45),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: isLoading
-                    ? const SizedBox(
-                    height: 18, width: 18,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Colors.white))
+                child: isDialogLoading
+                    ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                     : const Text('Send Link'),
               ),
             ],
@@ -186,6 +141,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // 1. Watch the provider for loading state
+    final authState = ref.watch(authProvider);
+    final isLoading = authState.isLoading;
+
+    // 2. Listen for errors to show them in the UI
+    ref.listen<AsyncValue<void>>(authProvider, (previous, next) {
+      next.whenOrNull(
+          error: (error, stack) {
+            setState(() => _generalError = getLoginErrorMessage(error.toString()));
+          },
+          data: (_) {
+            if (_generalError != null) setState(() => _generalError = null);
+          }
+      );
+    });
 
     return Scaffold(
       body: Container(
@@ -225,7 +196,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Text('Welcome Back', style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.outline)),
                     const SizedBox(height: 40),
 
-
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -242,7 +212,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-
 
                     TextFormField(
                       controller: _passwordController,
@@ -269,28 +238,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: 16),
 
-
                     if (_generalError != null) ...[
-                      Text(_generalError!, style: TextStyle(color: Colors.red.shade400, fontSize: 14)),
+                      Text(_generalError!, style: TextStyle(color: theme.colorScheme.error, fontSize: 14)),
                       const SizedBox(height: 16),
                     ],
-
 
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(
-                        onPressed: _isLoading ? null : _login,
+                        onPressed: isLoading ? null : _login, // Disables button when loading
                         style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                         ),
-                        child: _isLoading
+                        child: isLoading
                             ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                             : const Text('Login', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
                     ),
                     const SizedBox(height: 24),
-
 
                     Row(
                       children: [
@@ -301,11 +267,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: 24),
 
-
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        onPressed: _isLoading ? null : _googleSignIn,
+                        onPressed: isLoading ? null : _googleSignIn, // Disables button when loading
                         icon: const Icon(Icons.g_mobiledata, size: 24),
                         label: const Text('Continue with Google'),
                         style: OutlinedButton.styleFrom(
@@ -315,7 +280,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 40),
-
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

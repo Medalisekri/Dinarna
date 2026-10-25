@@ -2,9 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../core/helpers/auth_error.dart';
-import '../providers/auth_provider.dart';
+import 'package:expense_tracker/core/helpers/auth_error.dart';
+import 'package:expense_tracker/providers/auth_provider.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -19,7 +18,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  bool _isLoading = false;
   bool _obscurePassword = true;
   String? _generalError;
 
@@ -42,21 +40,27 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       _emailController.text.trim(),
       _passwordController.text.trim(),
     );
-
-    final authState = ref.read(authProvider);
-
-    authState.whenOrNull(
-      error: (error, stack) {
-        setState(() => _generalError = getSignUpErrorMessage(error.toString()));
-      },
-      data: (_) {
-      },
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // Watch provider for loading state
+    final authState = ref.watch(authProvider);
+    final isLoading = authState.isLoading;
+
+    // Listen for errors
+    ref.listen<AsyncValue<void>>(authProvider, (previous, next) {
+      next.whenOrNull(
+          error: (error, stack) {
+            setState(() => _generalError = getSignUpErrorMessage(error.toString()));
+          },
+          data: (_) {
+            if (_generalError != null) setState(() => _generalError = null);
+          }
+      );
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -93,7 +97,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     Text('Start tracking your expenses today', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.outline)),
                     const SizedBox(height: 40),
 
-
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -109,7 +112,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-
 
                     TextFormField(
                       controller: _passwordController,
@@ -131,7 +133,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ),
                     const SizedBox(height: 16),
 
-
                     TextFormField(
                       controller: _confirmPasswordController,
                       obscureText: _obscurePassword,
@@ -147,28 +148,25 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ),
                     const SizedBox(height: 24),
 
-
                     if (_generalError != null) ...[
-                      Text(_generalError!, style: TextStyle(color: Colors.red.shade400, fontSize: 14)),
+                      Text(_generalError!, style: TextStyle(color: theme.colorScheme.error, fontSize: 14)),
                       const SizedBox(height: 16),
                     ],
-
 
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(
-                        onPressed: _isLoading ? null : _signUp,
+                        onPressed: isLoading ? null : _signUp,
                         style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                         ),
-                        child: _isLoading
+                        child: isLoading
                             ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                             : const Text('Create Account', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
                     ),
                     const SizedBox(height: 40),
-
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

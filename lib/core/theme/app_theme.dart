@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
 
-  static const Color _primaryColor = Color(0xFF3F51B5);
+  static const Color _primaryColor = Color(0xF93F51B5);
   static const Color _primaryLight = Color(0xFF757DE8);
-  static const Color _primaryDark = Color(0xFF002984);
+
 
 
   static const Color foodColor = Color(0xFFFF9800);
@@ -55,7 +55,7 @@ class AppTheme {
         centerTitle: false,
       ),
 
-      // Card
+
       cardTheme: CardThemeData(
         color: colorScheme.surface,
         elevation: 0,
