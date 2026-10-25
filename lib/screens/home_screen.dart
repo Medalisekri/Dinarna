@@ -1,8 +1,6 @@
-// screens/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/providers/expense_provider.dart';
 import 'package:expense_tracker/core/widgets/skeleton_loader.dart';
@@ -51,11 +49,9 @@ class HomeScreen extends ConsumerWidget {
       ),
       actions: [
         IconButton(
-          onPressed: () async {
-            await FirebaseAuth.instance.signOut();
-          },
+          onPressed: () => context.push(AppRoutes.settings),
           icon: Icon(
-            Icons.logout_rounded,
+            Icons.settings,
             color: theme.colorScheme.onSurface,
           ),
         ),

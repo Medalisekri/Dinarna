@@ -1,4 +1,3 @@
-// screens/signup_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -46,11 +45,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Watch provider for loading state
     final authState = ref.watch(authProvider);
     final isLoading = authState.isLoading;
 
-    // Listen for errors
     ref.listen<AsyncValue<void>>(authProvider, (previous, next) {
       next.whenOrNull(
           error: (error, stack) {

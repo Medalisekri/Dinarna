@@ -1,4 +1,3 @@
-// screens/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -35,7 +34,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
-    // No need to manage _isLoading manually! The provider does it.
+
     await ref.read(authProvider.notifier).login(
       _emailController.text.trim(),
       _passwordController.text.trim(),
@@ -49,7 +48,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void _showResetDialog() {
     final emailCtrl = TextEditingController();
     final formKey = GlobalKey<FormState>();
-    final theme = Theme.of(context); // Grab theme for dialog
+    final theme = Theme.of(context);
 
     showDialog(
       context: context,
@@ -142,11 +141,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // 1. Watch the provider for loading state
     final authState = ref.watch(authProvider);
     final isLoading = authState.isLoading;
 
-    // 2. Listen for errors to show them in the UI
     ref.listen<AsyncValue<void>>(authProvider, (previous, next) {
       next.whenOrNull(
           error: (error, stack) {
@@ -246,7 +243,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(
-                        onPressed: isLoading ? null : _login, // Disables button when loading
+                        onPressed: isLoading ? null : _login,
                         style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -270,7 +267,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        onPressed: isLoading ? null : _googleSignIn, // Disables button when loading
+                        onPressed: isLoading ? null : _googleSignIn,
                         icon: const Icon(Icons.g_mobiledata, size: 24),
                         label: const Text('Continue with Google'),
                         style: OutlinedButton.styleFrom(
