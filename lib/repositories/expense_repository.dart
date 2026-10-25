@@ -20,7 +20,12 @@ class ExpenseRepository {
   Future<void> addExpense(Expense expense) async {
     await _firestore.collection('expenses').add({...expense.toMap(), 'userId': _auth.currentUser!.uid});
   }
-
+  Future<void> updateExpense(Expense expense) async {
+    await _firestore
+        .collection('expenses')
+        .doc(expense.id)
+        .update({...expense.toMap(), 'userId': _auth.currentUser!.uid});
+  }
   Future<void> deleteExpense(String id) async {
     await _firestore.collection('expenses').doc(id).delete();
   }

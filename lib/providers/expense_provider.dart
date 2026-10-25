@@ -10,9 +10,8 @@ class ExpenseListNotifier extends StreamNotifier<List<Expense>> {
     return ref.watch(expenseRepositoryProvider).watchExpenses();
   }
 
-  Future<void> deleteExpense(String id) async {
-    await ref.read(expenseRepositoryProvider).deleteExpense(id);
-  }
+
+
 }
 
 final expenseListProvider = StreamNotifierProvider<ExpenseListNotifier, List<Expense>>(
@@ -20,18 +19,24 @@ final expenseListProvider = StreamNotifierProvider<ExpenseListNotifier, List<Exp
 );
 
 
-class AddExpenseNotifier extends AsyncNotifier<void> {
+class ExpenseNotifier extends AsyncNotifier<void> {
   @override
   Future<void> build() async {
 
   }
 
-  Future<void> submitExpense(Expense expense) async {
+  Future<void> addExpense(Expense expense) async {
 
     await ref.read(expenseRepositoryProvider).addExpense(expense);
   }
+  Future<void> updateExpense(Expense expense) async {
+    await ref.read(expenseRepositoryProvider).updateExpense(expense);
+  }
+  Future<void> deleteExpense(String id) async {
+    await ref.read(expenseRepositoryProvider).deleteExpense(id);
+  }
 }
 
-final addExpenseProvider = AsyncNotifierProvider<AddExpenseNotifier, void>(
-  AddExpenseNotifier.new,
+final expenseProvider = AsyncNotifierProvider<ExpenseNotifier, void>(
+  ExpenseNotifier.new,
 );

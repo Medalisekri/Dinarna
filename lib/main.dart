@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expense_tracker/core/router/app_router.dart';
 import 'package:expense_tracker/screens/add_expenses_screen.dart';
 import 'package:expense_tracker/screens/home_screen.dart';
 import 'package:expense_tracker/screens/login_screen.dart';
@@ -19,23 +20,37 @@ Future<void> main() async {
     persistenceEnabled: true,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
-  runApp
-    (ProviderScope(child: MaterialApp(
-    title: 'GlassVault',
-    debugShowCheckedModeBanner: false,
-    home: FirebaseAuth.instance.currentUser != null ? HomeScreen() : LoginScreen(),
-    routes: {
-      '/signup':(context)=> const SignupScreen(),
-      '/login':(context)=> const LoginScreen(),
-      '/home':(context)=>HomeScreen(),
-      '/addexpenses' : (context) => const AddExpensesScreen(),
-    },
-
-  ),
-  )
-  );
+  runApp(ProviderScope(
 
 
+      child: const glassVaultApp()
+
+
+  ));
+}
+class glassVaultApp extends ConsumerStatefulWidget {
+  const glassVaultApp({super.key});
+
+
+
+
+
+  @override
+  ConsumerState<glassVaultApp> createState() => _glassVaultState();
+
+
+}
+class _glassVaultState extends ConsumerState<glassVaultApp>{
+  @override
+  Widget build(BuildContext context) {
+    final router = ref.watch(goRouterProvider);
+
+    return MaterialApp.router(
+      title: 'GlassVault',
+      debugShowCheckedModeBanner: false,
+      routerConfig: router,
+    );
+  }
 }
 
 
