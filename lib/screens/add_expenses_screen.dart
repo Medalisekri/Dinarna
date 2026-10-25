@@ -110,8 +110,6 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-
-
                 TextFormField(
                   controller: _amountController,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),

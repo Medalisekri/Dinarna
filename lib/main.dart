@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/theme/app_theme.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -32,9 +33,6 @@ class glassVaultApp extends ConsumerStatefulWidget {
   const glassVaultApp({super.key});
 
 
-
-
-
   @override
   ConsumerState<glassVaultApp> createState() => _glassVaultState();
 
@@ -44,11 +42,13 @@ class _glassVaultState extends ConsumerState<glassVaultApp>{
   @override
   Widget build(BuildContext context) {
     final router = ref.watch(goRouterProvider);
-
     return MaterialApp.router(
       title: 'GlassVault',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+
     );
   }
 }
