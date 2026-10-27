@@ -19,6 +19,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final _budgetController = TextEditingController();
   bool _isDeleting = false;
 
+
+
   @override
   void initState() {
     super.initState();
@@ -35,18 +37,55 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _saveBudget() {
-    final amount = double.tryParse(_budgetController.text.trim()) ?? 0.0;
-    if(_budgetController.text.isEmpty){
+    final text = _budgetController.text.trim();
+
+    if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter a budget'  ,style: TextStyle(color: Colors.red,) ), behavior: SnackBarBehavior.floating),
+        const SnackBar(
+          content: Text('Please enter an amount or 0 to disable'),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
       return;
     }
+
+    final amount = double.tryParse(text);
+
+    if (amount == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please enter a valid number'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    if (amount < 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Budget cannot be negative'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
     ref.read(monthlyBudgetProvider.notifier).setBudget(amount);
+
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Monthly budget updated' , style: TextStyle(color: Colors.green),), behavior: SnackBarBehavior.floating),
+      SnackBar(
+        content: Text(amount > 0
+            ? 'Monthly budget set to ${amount.toStringAsFixed(3)} DT'
+            : 'Budget tracking disabled'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        behavior: SnackBarBehavior.floating,
+      ),
     );
-  context.pop();
+
+    _budgetController.clear();
   }
 
   Future<void> _deleteAccount() async {
@@ -99,6 +138,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final themeMode = ref.watch(themeModeProvider);
+    final currentBudget = ref.watch(monthlyBudgetProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings & Budget')),
@@ -107,32 +147,83 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         children: [
 
           Text('Monthly Budget', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
+          Text(
+            'This limit applies to every month. Set 0 to disable.',
+            style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.outline),
+          ),
+          const SizedBox(height: 12),
+
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Set a global monthly spending limit.', style: theme.textTheme.bodyMedium),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Current Budget', style: theme.textTheme.bodyMedium),
+                      Text(
+                        currentBudget > 0 ? '${currentBudget.toStringAsFixed(3)} DT' : 'Not set',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: currentBudget > 0 ? theme.colorScheme.primary : theme.colorScheme.outline,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 24),
+
+                  Text('Quick Set', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.outline)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [100.0, 200.0, 500.0, 1000.0].map((amount) {
+                      return ActionChip(
+                        label: Text('${amount.toInt()} DT'),
+                        onPressed: () {
+                          _budgetController.text = amount.toString();
+                          setState(() {});
+                        },
+                      );
+                    }).toList(),
+                  ),
                   const SizedBox(height: 16),
+
                   TextField(
                     controller: _budgetController,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     decoration: InputDecoration(
-                      labelText: 'Amount (DT)',
+                      labelText: 'Custom Amount (DT)',
+                      hintText: 'e.g. 500.000',
                       prefixIcon: const Icon(Icons.monetization_on_outlined),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     ),
+                    onChanged: (val) => setState(() {}),
                   ),
                   const SizedBox(height: 16),
+
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton(
-                      onPressed: _saveBudget,
+                      onPressed: _budgetController.text.trim().isEmpty ? null : _saveBudget,
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
                       child: const Text('Save Budget'),
                     ),
                   ),
+
+                  if (_budgetController.text.trim().isEmpty) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      '💡 Tip: Enter 0 to turn off budget tracking.',
+                      style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.outline),
+                    ),
+                  ],
                 ],
               ),
             ),

@@ -6,6 +6,8 @@ import 'package:expense_tracker/providers/expense_provider.dart';
 import 'package:expense_tracker/core/widgets/skeleton_loader.dart';
 import 'package:expense_tracker/core/theme/app_theme.dart';
 import '../core/router/app.routes.dart';
+import '../core/widgets/budgets_progress.dart';
+import '../core/widgets/spending_chart.dart';
 import '../providers/month_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -183,33 +185,49 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _MonthNavigator(),
-        _CategoryFilter(
-          selected: _selectedCategory,
-          onSelected: (cat) => setState(() => _selectedCategory = cat),
-        ),
-        const SizedBox(height: 8),
-        _SummaryCard(total: _total),
-        const SizedBox(height: 8),
-        Expanded(
-          child: _filteredByCategory.isEmpty
-              ? _NoResultsInMonth()
-              : ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: _filteredByCategory.length,
-            itemBuilder: (context, index) {
-              final expense = _filteredByCategory[index];
-              return _SwipeableExpenseTile(expense: expense);
-            },
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _MonthNavigator(),
+          _CategoryFilter(
+            selected: _selectedCategory,
+            onSelected: (cat) => setState(() => _selectedCategory = cat),
+          ),
+          const SizedBox(height: 8),
+          _SummaryCard(total: _total),
+          const SizedBox(height: 16),
+
+          // Budget Progress
+          BudgetProgress(allExpenses: widget.expenses),
+          const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Expenses',
+            style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-      ],
+        const SizedBox(height: 12),
+
+        // Expense List (non-scrollable, part of the global scroll)
+        _filteredByCategory.isEmpty
+            ? _NoResultsInMonth()
+            : Column(
+            children: _filteredByCategory.map((expense) {
+              return _SwipeableExpenseTile(expense: expense);
+            }).toList(),
+        ),
+          const SizedBox(height: 20),
+          // Spending Chart (scrolls with everything)
+          if (_filteredByMonth.isNotEmpty)
+            SpendingChart(expenses: _filteredByMonth),
+
+        ],
+      ),
     );
   }
 }
-
 class _MonthNavigator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
