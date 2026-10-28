@@ -259,7 +259,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorWeakPassword => 'كلمة السر ضعيفة. استعمل 6 أحرف على الأقل.';
 
   @override
-  String get errorEmailInUse => 'كاين حساب بهذا الإيميل.';
+  String get errorEmailInUse => 'ثما حساب بهذا الإيميل.';
 
   @override
   String get errorSignupFailed => 'التسجيل فشل. عاود حاول.';
@@ -271,7 +271,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorGoogleCancelled => 'تم إلغاء الدخول بحساب Google.';
 
   @override
-  String get pdfMonthlyReport => 'تقرير المصاريف الشهري';
+  String get pdfMonthlyReport => 'تقرير مصروفك';
 
   @override
   String get transactions => 'المعاملات';

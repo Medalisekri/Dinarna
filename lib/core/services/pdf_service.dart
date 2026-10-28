@@ -1,13 +1,31 @@
 import 'dart:typed_data';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../l10n/app_localizations.dart';
 import '../helpers/category_helper.dart';
 
 class PdfService {
+
+  pw.Font? _regularFont;
+  pw.Font? _boldFont;
+
+  Future<pw.Font> _getRegularFont() async {
+    if (_regularFont != null) return _regularFont!;
+    final fontData = await rootBundle.load("lib/core/assets/fonts/Cairo-Regular.ttf");
+    _regularFont = pw.Font.ttf(fontData);
+    return _regularFont!;
+  }
+
+  Future<pw.Font> _getBoldFont() async {
+    if (_boldFont != null) return _boldFont!;
+    final fontData = await rootBundle.load("lib/core/assets/fonts/Cairo-Bold.ttf");
+    _boldFont = pw.Font.ttf(fontData);
+    return _boldFont!;
+  }
+
   Future<Uint8List> generateMonthlyReport({
     required AppLocalizations l10n,
     required String monthLabel,
@@ -15,7 +33,20 @@ class PdfService {
     required double totalSpent,
     required double? budget,
   }) async {
-    final pdf = pw.Document();
+
+    final regularFont = await _getRegularFont();
+    final boldFont = await _getBoldFont();
+
+
+    final pdf = pw.Document(
+      theme: pw.ThemeData.withFont(
+        base: regularFont,
+        bold: boldFont,
+        italic: regularFont,
+        boldItalic: boldFont,
+      ),
+    );
+
 
 
     final categoryTotals = <String, double>{};
@@ -26,6 +57,7 @@ class PdfService {
 
     pdf.addPage(
       pw.MultiPage(
+        textDirection: pw.TextDirection.rtl,
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(32),
         build: (context) => [
@@ -62,10 +94,11 @@ class PdfService {
                 style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold, color: PdfColors.indigo),
               ),
               pw.Text(
+                textAlign: pw.TextAlign.right,
                 l10n.pdfMonthlyReport,
                 style: pw.TextStyle(fontSize: 12, color: PdfColors.grey700),
               ),
-            ],
+              ],
           ),
           pw.Text(monthLabel, style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
         ],
@@ -113,7 +146,7 @@ class PdfService {
             padding: const pw.EdgeInsets.only(bottom: 8),
             child: pw.Row(
               children: [
-                pw.SizedBox(width: 120, child: pw.Text(entry.key, style: pw.TextStyle(fontSize: 12))),
+                pw.SizedBox(width: 100, child: pw.Text(entry.key,  style: pw.TextStyle(fontSize: 12 , ))),
                 pw.Expanded(
                   child: pw.Container(
                     height: 8,
@@ -150,7 +183,7 @@ class PdfService {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text(l10n.allTransactions, style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+        pw.Text(l10n.allTransactions, style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold ) ),
         pw.SizedBox(height: 12),
         pw.Table(
           border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
@@ -183,7 +216,7 @@ class PdfService {
   pw.Widget _buildTableCell(String text, {bool bold = false, pw.TextAlign align = pw.TextAlign.left}) {
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      child: pw.Text(text, style: pw.TextStyle(fontSize: 10, fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal), textAlign: align),
+      child: pw.Text(text, style: pw.TextStyle(fontSize: 10, fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal), textAlign: align ),
     );
   }
 
