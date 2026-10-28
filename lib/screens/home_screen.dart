@@ -5,10 +5,13 @@ import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/providers/expense_provider.dart';
 import 'package:expense_tracker/core/widgets/skeleton_loader.dart';
 import 'package:expense_tracker/core/theme/app_theme.dart';
+import 'package:printing/printing.dart';
 import '../core/router/app.routes.dart';
+import '../core/services/pdf_service.dart';
 import '../core/widgets/budgets_progress.dart';
 import '../core/widgets/spending_chart.dart';
 import '../providers/month_provider.dart';
+import '../providers/preferences_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -51,6 +54,14 @@ class HomeScreen extends ConsumerWidget {
       ),
       actions: [
         IconButton(
+          onPressed: () => _exportPdf(context, ref),
+          icon: Icon(
+            Icons.picture_as_pdf_outlined,
+            color: theme.colorScheme.onSurface,
+          ),
+          tooltip: 'Export PDF',
+        ),
+        IconButton(
           onPressed: () => context.push(AppRoutes.settings),
           icon: Icon(
             Icons.settings,
@@ -61,7 +72,59 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 }
+Future<void> _exportPdf(BuildContext context, WidgetRef ref) async {
+  final expensesAsync = ref.read(expenseListProvider);
+  final month = ref.read(monthProvider);
+  final budget = ref.read(monthlyBudgetProvider);
+  final pdfService = ref.read(pdfServiceProvider);
 
+  final monthlyExpenses = expensesAsync.value?.where((e) {
+    return e.date.year == month.year && e.date.month == month.month;
+  }).toList() ?? [];
+
+  if (monthlyExpenses.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('No expenses to export for this month'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+    return;
+  }
+
+  final totalSpent = monthlyExpenses.fold(0.0, (sum, e) => sum + e.amount);
+
+
+  final months = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+  final monthLabel = '${months[month.month - 1]} ${month.year}';
+
+  try {
+
+    final pdfBytes = await pdfService.generateMonthlyReport(
+      monthLabel: monthLabel,
+      expenses: monthlyExpenses,
+      totalSpent: totalSpent,
+      budget: budget > 0 ? budget : null,
+    );
+
+
+    await Printing.layoutPdf(
+      onLayout: (format) async => pdfBytes,
+      name: 'GlassVault_$monthLabel.pdf',
+    );
+  } catch (e) {
+    if (context.mounted){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to generate PDF: $e'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+}
 class _ErrorState extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
@@ -198,7 +261,6 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
           _SummaryCard(total: _total),
           const SizedBox(height: 16),
 
-          // Budget Progress
           BudgetProgress(allExpenses: widget.expenses),
           const SizedBox(height: 16),
         Padding(
@@ -210,7 +272,6 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
         ),
         const SizedBox(height: 12),
 
-        // Expense List (non-scrollable, part of the global scroll)
         _filteredByCategory.isEmpty
             ? _NoResultsInMonth()
             : Column(
@@ -219,7 +280,6 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
             }).toList(),
         ),
           const SizedBox(height: 20),
-          // Spending Chart (scrolls with everything)
           if (_filteredByMonth.isNotEmpty)
             SpendingChart(expenses: _filteredByMonth),
 
