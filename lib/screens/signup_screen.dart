@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:expense_tracker/core/helpers/auth_error.dart';
 import 'package:expense_tracker/providers/auth_provider.dart';
+import '../core/helpers/auth_error.dart';
+import '../l10n/app_localizations.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -44,18 +45,19 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     final authState = ref.watch(authProvider);
     final isLoading = authState.isLoading;
 
     ref.listen<AsyncValue<void>>(authProvider, (previous, next) {
       next.whenOrNull(
-          error: (error, stack) {
-            setState(() => _generalError = getSignUpErrorMessage(error.toString()));
-          },
-          data: (_) {
-            if (_generalError != null) setState(() => _generalError = null);
-          }
+        error: (error, stack) {
+          setState(() => _generalError = getLocalizedSingUpError(l10n, error.toString()));
+        },
+        data: (_) {
+          if (_generalError != null) setState(() => _generalError = null);
+        },
       );
     });
 
@@ -89,32 +91,34 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Create Account', style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
+                    Text(l10n.createAccount, style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
-                    Text('Start tracking your expenses today', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.outline)),
+                    Text(l10n.createAccountSubtitle, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.outline)),
                     const SizedBox(height: 40),
 
+                    // Email
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        labelText: 'Email',
+                        labelText: l10n.email,
                         prefixIcon: const Icon(Icons.email_outlined),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
                       ),
                       validator: (val) {
-                        if (val == null || val.isEmpty) return 'Email is required';
-                        if (!_isValidEmail(val)) return 'Enter a valid email';
+                        if (val == null || val.isEmpty) return l10n.emailRequired;
+                        if (!_isValidEmail(val)) return l10n.enterValidEmail;
                         return null;
                       },
                     ),
                     const SizedBox(height: 16),
 
+                    // Password
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: l10n.password,
                         prefixIcon: const Icon(Icons.lock_outline),
                         suffixIcon: IconButton(
                           icon: Icon(_obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
@@ -123,33 +127,36 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
                       ),
                       validator: (val) {
-                        if (val == null || val.isEmpty) return 'Password is required';
-                        if (val.length < 6) return 'Must be at least 6 characters';
+                        if (val == null || val.isEmpty) return l10n.passwordRequired;
+                        if (val.length < 6) return l10n.passwordMinLength;
                         return null;
                       },
                     ),
                     const SizedBox(height: 16),
 
+                    // Confirm Password
                     TextFormField(
                       controller: _confirmPasswordController,
                       obscureText: _obscurePassword,
                       decoration: InputDecoration(
-                        labelText: 'Confirm Password',
+                        labelText: l10n.confirmPassword,
                         prefixIcon: const Icon(Icons.lock_outline),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
                       ),
                       validator: (val) {
-                        if (val != _passwordController.text) return 'Passwords do not match';
+                        if (val != _passwordController.text) return l10n.passwordsDoNotMatch;
                         return null;
                       },
                     ),
                     const SizedBox(height: 24),
 
+                    // Error Message
                     if (_generalError != null) ...[
                       Text(_generalError!, style: TextStyle(color: theme.colorScheme.error, fontSize: 14)),
                       const SizedBox(height: 16),
                     ],
 
+                    // Sign Up Button
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(
@@ -160,18 +167,20 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         ),
                         child: isLoading
                             ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                            : const Text('Create Account', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                            : Text(l10n.createAccount, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
                     ),
                     const SizedBox(height: 40),
 
+                    // Login Link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Already have an account? ", style: theme.textTheme.bodyMedium),
+                        Text(l10n.alreadyHaveAccount, style: theme.textTheme.bodyMedium),
+                        const SizedBox(width: 4),
                         GestureDetector(
                           onTap: () => context.pop(),
-                          child: Text('Login', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
+                          child: Text(l10n.login, style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
                         ),
                       ],
                     ),
@@ -184,4 +193,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       ),
     );
   }
+
+
 }

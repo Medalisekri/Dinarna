@@ -6,6 +6,10 @@ import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/providers/expense_provider.dart';
 import 'package:expense_tracker/core/theme/app_theme.dart';
 
+import '../core/helpers/category_helper.dart';
+import '../l10n/app_localizations.dart';
+
+
 class AddExpensesScreen extends ConsumerStatefulWidget {
   final Expense? expense;
   const AddExpensesScreen({super.key, this.expense});
@@ -58,6 +62,8 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
   }
 
   Future<void> _saveExpense() async {
+    final l10n = AppLocalizations.of(context)!;
+
     if (!_formKey.currentState!.validate()) return;
 
     final amount = double.tryParse(_amountController.text.trim()) ?? 0;
@@ -84,7 +90,7 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to save: $e'),
+            content: Text(l10n.failedToSave(e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -95,11 +101,12 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final isEditing = widget.expense != null;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Edit Expense' : 'Add Expense'),
+        title: Text(isEditing ? l10n.editExpense : l10n.addExpense),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -109,7 +116,6 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-
                 TextFormField(
                   controller: _amountController,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -118,7 +124,7 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
                   ],
                   style: theme.textTheme.headlineSmall,
                   decoration: InputDecoration(
-                    labelText: 'Amount (DT)',
+                    labelText: l10n.amountLabel,
                     prefixIcon: Icon(
                       Icons.monetization_on_outlined,
                       color: theme.colorScheme.primary,
@@ -126,19 +132,18 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
                   ),
                   validator: (value) {
-                    if (value == null || value.trim().isEmpty) return 'Amount is required';
+                    if (value == null || value.trim().isEmpty) return l10n.amountRequired;
                     final amount = double.tryParse(value.trim());
-                    if (amount == null || amount <= 0) return 'Must be greater than 0';
+                    if (amount == null || amount <= 0) return l10n.amountMustBePositive;
                     return null;
                   },
                 ),
                 const SizedBox(height: 20),
 
-
                 DropdownButtonFormField<String>(
                   value: _selectedCategory,
                   decoration: InputDecoration(
-                    labelText: 'Category',
+                    labelText: l10n.category,
                     prefixIcon: Icon(
                       AppTheme.getCategoryIcon(_selectedCategory),
                       color: AppTheme.getCategoryColor(_selectedCategory),
@@ -150,9 +155,13 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
                       value: cat,
                       child: Row(
                         children: [
-
+                          Icon(
+                            AppTheme.getCategoryIcon(cat),
+                            size: 20,
+                            color: AppTheme.getCategoryColor(cat),
+                          ),
                           const SizedBox(width: 8),
-                          Text(cat),
+                          Text(getCategoryLabel(l10n, cat)),
                         ],
                       ),
                     );
@@ -161,13 +170,12 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
                 ),
                 const SizedBox(height: 20),
 
-
                 InkWell(
                   onTap: _pickDate,
                   borderRadius: BorderRadius.circular(16),
                   child: InputDecorator(
                     decoration: InputDecoration(
-                      labelText: 'Date',
+                      labelText: l10n.date,
                       prefixIcon: Icon(
                         Icons.calendar_today,
                         color: theme.colorScheme.primary,
@@ -182,13 +190,12 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
                 ),
                 const SizedBox(height: 20),
 
-
                 TextFormField(
                   controller: _noteController,
                   maxLength: 100,
                   maxLines: 3,
                   decoration: InputDecoration(
-                    labelText: 'Note (Optional)',
+                    labelText: l10n.noteOptional,
                     prefixIcon: Icon(
                       Icons.notes_outlined,
                       color: theme.colorScheme.primary,
@@ -198,7 +205,6 @@ class _AddExpensesScreenState extends ConsumerState<AddExpensesScreen> {
                   ),
                 ),
                 const SizedBox(height: 32),
-
 
                 _SaveButton(
                   isEditing: isEditing,
@@ -240,6 +246,7 @@ class _SaveButtonState extends State<_SaveButton> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return FilledButton(
       onPressed: _isLoading ? null : _handlePress,
@@ -257,7 +264,7 @@ class _SaveButtonState extends State<_SaveButton> {
         ),
       )
           : Text(
-        widget.isEditing ? 'Update Expense' : 'Add Expense',
+        widget.isEditing ? l10n.updateExpense : l10n.addExpense,
         style: theme.textTheme.titleMedium?.copyWith(
           fontWeight: FontWeight.bold,
         ),

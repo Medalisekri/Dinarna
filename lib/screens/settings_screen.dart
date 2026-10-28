@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_tracker/providers/preferences_provider.dart';
-
 import '../l10n/app_localizations.dart';
 
 
@@ -18,8 +16,6 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final _budgetController = TextEditingController();
   bool _isDeleting = false;
-
-
 
   @override
   void initState() {
@@ -37,12 +33,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _saveBudget() {
+    final l10n = AppLocalizations.of(context)!;
     final text = _budgetController.text.trim();
 
     if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter an amount or 0 to disable'),
+        SnackBar(
+          content: Text(l10n.enterAmountOrZero),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -54,7 +51,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (amount == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please enter a valid number'),
+          content: Text(l10n.enterValidNumber),
           backgroundColor: Theme.of(context).colorScheme.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -65,7 +62,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (amount < 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Budget cannot be negative'),
+          content: Text(l10n.budgetCannotBeNegative),
           backgroundColor: Theme.of(context).colorScheme.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -78,8 +75,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(amount > 0
-            ? 'Monthly budget set to ${amount.toStringAsFixed(3)} DT'
-            : 'Budget tracking disabled'),
+            ? l10n.budgetSetSuccess(amount.toStringAsFixed(3))
+            : l10n.budgetDisabled),
         backgroundColor: Theme.of(context).colorScheme.primary,
         behavior: SnackBarBehavior.floating,
       ),
@@ -89,17 +86,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _deleteAccount() async {
+    final l10n = AppLocalizations.of(context)!;
+
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Account?'),
-        content: const Text('This will permanently delete your account and ALL your expense data. This cannot be undone.'),
+        title: Text(l10n.deleteAccountConfirmTitle),
+        content: Text(l10n.deleteAccountConfirmMessage),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancel),
+          ),
           TextButton(
             style: TextButton.styleFrom(foregroundColor: Colors.red),
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete Forever'),
+            child: Text(l10n.deleteForever),
           ),
         ],
       ),
@@ -120,12 +122,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           }
 
           await user.delete();
-
         }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: ${e.toString()}'), backgroundColor: Colors.red),
+            SnackBar(
+              content: Text(l10n.failedToSave(e.toString())),
+              backgroundColor: Colors.red,
+            ),
           );
         }
       } finally {
@@ -137,19 +141,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final themeMode = ref.watch(themeModeProvider);
     final currentBudget = ref.watch(monthlyBudgetProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings & Budget')),
+      appBar: AppBar(title: Text(l10n.settingsAndBudget)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-
-          Text('Monthly Budget', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          Text(l10n.monthlyBudget, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
           Text(
-            'This limit applies to every month. Set 0 to disable.',
+            l10n.budgetSubtitle,
             style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.outline),
           ),
           const SizedBox(height: 12),
@@ -163,9 +167,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Current Budget', style: theme.textTheme.bodyMedium),
+                      Text(l10n.currentBudget, style: theme.textTheme.bodyMedium),
                       Text(
-                        currentBudget > 0 ? '${currentBudget.toStringAsFixed(3)} DT' : 'Not set',
+                        currentBudget > 0 ? '${currentBudget.toStringAsFixed(3)} DT' : l10n.notSet,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: currentBudget > 0 ? theme.colorScheme.primary : theme.colorScheme.outline,
@@ -175,7 +179,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   const Divider(height: 24),
 
-                  Text('Quick Set', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.outline)),
+                  Text(l10n.quickSet, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.outline)),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
@@ -196,7 +200,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     controller: _budgetController,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     decoration: InputDecoration(
-                      labelText: 'Custom Amount (DT)',
+                      labelText: l10n.customAmount,
                       hintText: 'e.g. 500.000',
                       prefixIcon: const Icon(Icons.monetization_on_outlined),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -213,14 +217,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
-                      child: const Text('Save Budget'),
+                      child: Text(l10n.saveBudget),
                     ),
                   ),
 
                   if (_budgetController.text.trim().isEmpty) ...[
                     const SizedBox(height: 8),
                     Text(
-                      '💡 Tip: Enter 0 to turn off budget tracking.',
+                      '💡 ${l10n.enterAmountOrZero}',
                       style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.outline),
                     ),
                   ],
@@ -230,34 +234,31 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           const SizedBox(height: 24),
 
-
-          Text('Preferences', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          Text(l10n.preferences, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Card(
             child: Column(
               children: [
-
                 ListTile(
                   leading: const Icon(Icons.dark_mode_outlined),
-                  title: const Text('Theme'),
+                  title: Text(l10n.theme),
                   trailing: DropdownButton<ThemeMode>(
                     value: themeMode,
                     underline: const SizedBox(),
                     onChanged: (mode) {
                       if (mode != null) ref.read(themeModeProvider.notifier).setTheme(mode);
                     },
-                    items: const [
-                      DropdownMenuItem(value: ThemeMode.system, child: Text('System')),
-                      DropdownMenuItem(value: ThemeMode.light, child: Text('Light')),
-                      DropdownMenuItem(value: ThemeMode.dark, child: Text('Dark')),
+                    items: [
+                      DropdownMenuItem(value: ThemeMode.system, child: Text(l10n.system)),
+                      DropdownMenuItem(value: ThemeMode.light, child: Text(l10n.light)),
+                      DropdownMenuItem(value: ThemeMode.dark, child: Text(l10n.dark)),
                     ],
                   ),
                 ),
                 const Divider(height: 1),
-
                 ListTile(
                   leading: const Icon(Icons.language),
-                  title: Text(AppLocalizations.of(context)!.language),
+                  title: Text(l10n.language),
                   trailing: DropdownButton<Locale>(
                     value: ref.watch(localeProvider),
                     underline: const SizedBox(),
@@ -271,31 +272,29 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       DropdownMenuItem(value: Locale('ar'), child: Text('عربي / تونسي')),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
           const SizedBox(height: 24),
 
-
-          Text('Account', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          Text(l10n.account, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Card(
             child: Column(
               children: [
                 ListTile(
                   leading: const Icon(Icons.logout, color: Colors.orange),
-                  title: const Text('Logout'),
+                  title: Text(l10n.logout),
                   onTap: () async {
                     await FirebaseAuth.instance.signOut();
-
                   },
                 ),
                 const Divider(height: 1),
                 ListTile(
                   leading: const Icon(Icons.delete_forever, color: Colors.red),
-                  title: const Text('Delete Account & Data', style: TextStyle(color: Colors.red)),
-                  subtitle: const Text('Permanently erase all data'),
+                  title: Text(l10n.deleteAccountAndData, style: const TextStyle(color: Colors.red)),
+                  subtitle: Text(l10n.permanentlyEraseData),
                   onTap: _isDeleting ? null : _deleteAccount,
                   trailing: _isDeleting ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : null,
                 ),

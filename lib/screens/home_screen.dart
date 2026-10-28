@@ -6,10 +6,12 @@ import 'package:expense_tracker/providers/expense_provider.dart';
 import 'package:expense_tracker/core/widgets/skeleton_loader.dart';
 import 'package:expense_tracker/core/theme/app_theme.dart';
 import 'package:printing/printing.dart';
+import '../core/helpers/category_helper.dart';
 import '../core/router/app.routes.dart';
 import '../core/services/pdf_service.dart';
 import '../core/widgets/budgets_progress.dart';
 import '../core/widgets/spending_chart.dart';
+import '../l10n/app_localizations.dart';
 import '../providers/month_provider.dart';
 import '../providers/preferences_provider.dart';
 
@@ -42,11 +44,12 @@ class HomeScreen extends ConsumerWidget {
 
   PreferredSizeWidget _buildAppBar(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return AppBar(
       automaticallyImplyLeading: false,
       title: Text(
-        'GlassVault',
+        l10n.appTitle,
         style: theme.textTheme.headlineSmall?.copyWith(
           fontWeight: FontWeight.bold,
           color: theme.colorScheme.onSurface,
@@ -72,7 +75,9 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 }
+
 Future<void> _exportPdf(BuildContext context, WidgetRef ref) async {
+  final l10n = AppLocalizations.of(context)!;
   final expensesAsync = ref.read(expenseListProvider);
   final month = ref.read(monthProvider);
   final budget = ref.read(monthlyBudgetProvider);
@@ -84,8 +89,8 @@ Future<void> _exportPdf(BuildContext context, WidgetRef ref) async {
 
   if (monthlyExpenses.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('No expenses to export for this month'),
+      SnackBar(
+        content: Text(l10n.noExpensesToExport),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -93,31 +98,26 @@ Future<void> _exportPdf(BuildContext context, WidgetRef ref) async {
   }
 
   final totalSpent = monthlyExpenses.fold(0.0, (sum, e) => sum + e.amount);
-
-
-  final months = ['January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'];
-  final monthLabel = '${months[month.month - 1]} ${month.year}';
+  final monthLabel = _getMonthLabel(l10n, month);
 
   try {
-
     final pdfBytes = await pdfService.generateMonthlyReport(
+      l10n: l10n,
       monthLabel: monthLabel,
       expenses: monthlyExpenses,
       totalSpent: totalSpent,
       budget: budget > 0 ? budget : null,
     );
 
-
     await Printing.layoutPdf(
       onLayout: (format) async => pdfBytes,
       name: 'GlassVault_$monthLabel.pdf',
     );
   } catch (e) {
-    if (context.mounted){
+    if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to generate PDF: $e'),
+          content: Text(l10n.failedToGeneratePdf(e.toString())),
           backgroundColor: Theme.of(context).colorScheme.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -125,6 +125,18 @@ Future<void> _exportPdf(BuildContext context, WidgetRef ref) async {
     }
   }
 }
+
+
+String _getMonthLabel(AppLocalizations l10n, DateTime date) {
+  final months = [
+    l10n.monthJanuary, l10n.monthFebruary, l10n.monthMarch,
+    l10n.monthApril, l10n.monthMay, l10n.monthJune,
+    l10n.monthJuly, l10n.monthAugust, l10n.monthSeptember,
+    l10n.monthOctober, l10n.monthNovember, l10n.monthDecember,
+  ];
+  return '${months[date.month - 1]} ${date.year}';
+}
+
 class _ErrorState extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
@@ -134,6 +146,7 @@ class _ErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Center(
       child: Padding(
@@ -148,7 +161,7 @@ class _ErrorState extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Something went wrong',
+              l10n.somethingWentWrong,
               style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -163,7 +176,7 @@ class _ErrorState extends StatelessWidget {
             FilledButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: const Text('Try Again'),
+              label: Text(l10n.tryAgain),
             ),
           ],
         ),
@@ -178,6 +191,7 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Center(
       child: Column(
@@ -198,14 +212,14 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'No expenses yet',
+            l10n.noExpensesYet,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Tap + to add your first expense',
+            l10n.tapToAddFirst,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.outline,
             ),
@@ -248,6 +262,8 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -263,37 +279,41 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
 
           BudgetProgress(allExpenses: widget.expenses),
           const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'Expenses',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        const SizedBox(height: 12),
 
-        _filteredByCategory.isEmpty
-            ? _NoResultsInMonth()
-            : Column(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              l10n.expenses,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          _filteredByCategory.isEmpty
+              ? _NoResultsInMonth()
+              : Column(
             children: _filteredByCategory.map((expense) {
               return _SwipeableExpenseTile(expense: expense);
             }).toList(),
-        ),
+          ),
           const SizedBox(height: 20),
           if (_filteredByMonth.isNotEmpty)
             SpendingChart(expenses: _filteredByMonth),
-
         ],
       ),
     );
   }
 }
+
 class _MonthNavigator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final monthNotifier = ref.watch(monthProvider.notifier);
-    final monthLabel = ref.watch(monthProvider.notifier).label;
+    final month = ref.watch(monthProvider);
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    final monthLabel = _getMonthLabel(l10n, month);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -338,6 +358,7 @@ class _CategoryFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final categories = ['All', 'Food', 'Health', 'Shopping', 'Transport', 'Other'];
 
     return SizedBox(
@@ -351,6 +372,7 @@ class _CategoryFilter extends StatelessWidget {
           final category = categories[index];
           final isSelected = selected == category;
           final isAll = category == 'All';
+          final label = _getCategoryLabel(l10n, category);
 
           return GestureDetector(
             onTap: () => onSelected(category),
@@ -377,7 +399,7 @@ class _CategoryFilter extends StatelessWidget {
                     const SizedBox(width: 6),
                   ],
                   Text(
-                    category,
+                    label,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: isSelected
                           ? theme.colorScheme.onPrimary
@@ -394,6 +416,17 @@ class _CategoryFilter extends StatelessWidget {
       ),
     );
   }
+
+  String _getCategoryLabel(AppLocalizations l10n, String category) {
+    switch (category) {
+      case 'All': return l10n.categoryAll;
+      case 'Food': return l10n.categoryFood;
+      case 'Health': return l10n.categoryHealth;
+      case 'Shopping': return l10n.categoryShopping;
+      case 'Transport': return l10n.categoryTransport;
+      default: return l10n.categoryOther;
+    }
+  }
 }
 
 class _SummaryCard extends StatelessWidget {
@@ -404,6 +437,7 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -433,7 +467,7 @@ class _SummaryCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Total Spent',
+                l10n.totalSpent,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onPrimary.withAlpha(180),
                 ),
@@ -477,6 +511,7 @@ class _NoResultsInMonth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Center(
       child: Column(
@@ -489,7 +524,7 @@ class _NoResultsInMonth extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'No expenses this month',
+            l10n.noExpensesThisMonth,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.outline,
             ),
@@ -508,7 +543,9 @@ class _SwipeableExpenseTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final categoryColor = AppTheme.getCategoryColor(expense.category);
+    final categoryLabel = getCategoryLabel(l10n, expense.category);
 
     return Dismissible(
       key: Key(expense.id),
@@ -530,21 +567,24 @@ class _SwipeableExpenseTile extends ConsumerWidget {
         return await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Delete Expense?'),
+            title: Text(l10n.deleteExpense),
             content: Text(
-              'Remove ${expense.amount.toStringAsFixed(3)} DT - ${expense.category}?',
+              l10n.removeExpenseConfirm(
+                expense.amount.toStringAsFixed(3),
+                categoryLabel,
+              ),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel'),
+                child: Text(l10n.cancel),
               ),
               FilledButton(
                 style: FilledButton.styleFrom(
                   backgroundColor: theme.colorScheme.error,
                 ),
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text('Delete'),
+                child: Text(l10n.delete),
               ),
             ],
           ),
@@ -554,7 +594,7 @@ class _SwipeableExpenseTile extends ConsumerWidget {
         ref.read(expenseProvider.notifier).deleteExpense(expense.id);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${expense.category} expense deleted'),
+            content: Text(l10n.expenseDeleted(categoryLabel)),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -593,14 +633,14 @@ class _SwipeableExpenseTile extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    expense.category,
+                    categoryLabel,
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    expense.note.isNotEmpty ? expense.note : 'No note',
+                    expense.note.isNotEmpty ? expense.note : l10n.noNote,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(
@@ -648,4 +688,6 @@ class _SwipeableExpenseTile extends ConsumerWidget {
       ),
     );
   }
+
+
 }

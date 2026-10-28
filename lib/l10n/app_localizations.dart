@@ -104,11 +104,143 @@ abstract class AppLocalizations {
   /// **'GlassVault'**
   String get appTitle;
 
-  /// No description provided for @addExpense.
+  /// No description provided for @loginTitle.
   ///
   /// In en, this message translates to:
-  /// **'Add Expense'**
-  String get addExpense;
+  /// **'Welcome Back'**
+  String get loginTitle;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPassword;
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login;
+
+  /// No description provided for @or.
+  ///
+  /// In en, this message translates to:
+  /// **'OR'**
+  String get or;
+
+  /// No description provided for @continueWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get continueWithGoogle;
+
+  /// No description provided for @dontHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get dontHaveAccount;
+
+  /// No description provided for @signUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get signUp;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPassword;
+
+  /// No description provided for @enterYourEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email'**
+  String get enterYourEmail;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @sendLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Link'**
+  String get sendLink;
+
+  /// No description provided for @resetLinkSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset link sent! Check your inbox (and spam).'**
+  String get resetLinkSent;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get createAccount;
+
+  /// No description provided for @createAccountSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start tracking your expenses today'**
+  String get createAccountSubtitle;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @alreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get alreadyHaveAccount;
+
+  /// No description provided for @noExpensesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses yet'**
+  String get noExpensesYet;
+
+  /// No description provided for @tapToAddFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to add your first expense'**
+  String get tapToAddFirst;
+
+  /// No description provided for @somethingWentWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get somethingWentWrong;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get tryAgain;
+
+  /// No description provided for @noExpensesThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses this month'**
+  String get noExpensesThisMonth;
 
   /// No description provided for @totalSpent.
   ///
@@ -116,23 +248,581 @@ abstract class AppLocalizations {
   /// **'Total Spent'**
   String get totalSpent;
 
-  /// No description provided for @foodCategory.
+  /// No description provided for @expenses.
   ///
   /// In en, this message translates to:
-  /// **'Food'**
-  String get foodCategory;
+  /// **'Expenses'**
+  String get expenses;
 
-  /// No description provided for @settings.
+  /// No description provided for @deleteExpense.
   ///
   /// In en, this message translates to:
-  /// **'Settings'**
-  String get settings;
+  /// **'Delete Expense?'**
+  String get deleteExpense;
+
+  /// No description provided for @removeExpenseConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {amount} DT - {category}?'**
+  String removeExpenseConfirm(String amount, String category);
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @expenseDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{category} expense deleted'**
+  String expenseDeleted(String category);
+
+  /// No description provided for @editExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Expense'**
+  String get editExpense;
+
+  /// No description provided for @addExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Expense'**
+  String get addExpense;
+
+  /// No description provided for @amountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount (DT)'**
+  String get amountLabel;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
+
+  /// No description provided for @noteOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (Optional)'**
+  String get noteOptional;
+
+  /// No description provided for @updateExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Expense'**
+  String get updateExpense;
+
+  /// No description provided for @noNote.
+  ///
+  /// In en, this message translates to:
+  /// **'No note'**
+  String get noNote;
+
+  /// No description provided for @settingsAndBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings & Budget'**
+  String get settingsAndBudget;
+
+  /// No description provided for @monthlyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Budget'**
+  String get monthlyBudget;
+
+  /// No description provided for @budgetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This limit applies to every month. Set 0 to disable.'**
+  String get budgetSubtitle;
+
+  /// No description provided for @currentBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Budget'**
+  String get currentBudget;
+
+  /// No description provided for @notSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get notSet;
+
+  /// No description provided for @quickSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Set'**
+  String get quickSet;
+
+  /// No description provided for @customAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Amount (DT)'**
+  String get customAmount;
+
+  /// No description provided for @saveBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Budget'**
+  String get saveBudget;
+
+  /// No description provided for @preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferences;
+
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// No description provided for @system.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get system;
+
+  /// No description provided for @light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get light;
+
+  /// No description provided for @dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get dark;
 
   /// No description provided for @language.
   ///
   /// In en, this message translates to:
   /// **'Language'**
   String get language;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout;
+
+  /// No description provided for @deleteAccountAndData.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account & Data'**
+  String get deleteAccountAndData;
+
+  /// No description provided for @permanentlyEraseData.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently erase all data'**
+  String get permanentlyEraseData;
+
+  /// No description provided for @deleteAccountConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account?'**
+  String get deleteAccountConfirmTitle;
+
+  /// No description provided for @deleteAccountConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete your account and ALL your expense data. This cannot be undone.'**
+  String get deleteAccountConfirmMessage;
+
+  /// No description provided for @deleteForever.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Forever'**
+  String get deleteForever;
+
+  /// No description provided for @onTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'On track'**
+  String get onTrack;
+
+  /// No description provided for @gettingClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting close'**
+  String get gettingClose;
+
+  /// No description provided for @almostAtLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Almost at limit'**
+  String get almostAtLimit;
+
+  /// No description provided for @budgetExceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget exceeded!'**
+  String get budgetExceeded;
+
+  /// No description provided for @setMonthlyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a Monthly Budget'**
+  String get setMonthlyBudget;
+
+  /// No description provided for @trackSpendingLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your spending limits and get alerts'**
+  String get trackSpendingLimits;
+
+  /// No description provided for @spent.
+  ///
+  /// In en, this message translates to:
+  /// **'spent'**
+  String get spent;
+
+  /// No description provided for @ofBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'{percentage}% of {budget} DT'**
+  String ofBudget(String percentage, String budget);
+
+  /// No description provided for @spendingByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending by Category'**
+  String get spendingByCategory;
+
+  /// No description provided for @emailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is required'**
+  String get emailRequired;
+
+  /// No description provided for @enterValidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email'**
+  String get enterValidEmail;
+
+  /// No description provided for @passwordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get passwordRequired;
+
+  /// No description provided for @passwordMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Must be at least 6 characters'**
+  String get passwordMinLength;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @amountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount is required'**
+  String get amountRequired;
+
+  /// No description provided for @amountMustBePositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Must be greater than 0'**
+  String get amountMustBePositive;
+
+  /// No description provided for @errorUserNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No account found with this email.'**
+  String get errorUserNotFound;
+
+  /// No description provided for @errorWrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password. Try again.'**
+  String get errorWrongPassword;
+
+  /// No description provided for @errorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address.'**
+  String get errorInvalidEmail;
+
+  /// No description provided for @errorTooManyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please try again later.'**
+  String get errorTooManyRequests;
+
+  /// No description provided for @errorLoginFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Login failed. Please check your connection.'**
+  String get errorLoginFailed;
+
+  /// No description provided for @errorWeakPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is too weak. Use at least 6 characters.'**
+  String get errorWeakPassword;
+
+  /// No description provided for @errorEmailInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'An account already exists with this email.'**
+  String get errorEmailInUse;
+
+  /// No description provided for @errorSignupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up failed. Please try again.'**
+  String get errorSignupFailed;
+
+  /// No description provided for @errorGoogleSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in failed.'**
+  String get errorGoogleSignIn;
+
+  /// No description provided for @errorGoogleCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in was cancelled.'**
+  String get errorGoogleCancelled;
+
+  /// No description provided for @pdfMonthlyReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Expense Report'**
+  String get pdfMonthlyReport;
+
+  /// No description provided for @transactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get transactions;
+
+  /// No description provided for @budget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get budget;
+
+  /// No description provided for @remaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get remaining;
+
+  /// No description provided for @allTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'All Transactions'**
+  String get allTransactions;
+
+  /// No description provided for @pdfDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get pdfDate;
+
+  /// No description provided for @pdfCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get pdfCategory;
+
+  /// No description provided for @pdfNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get pdfNote;
+
+  /// No description provided for @pdfAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get pdfAmount;
+
+  /// No description provided for @generatedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated by GlassVault'**
+  String get generatedBy;
+
+  /// No description provided for @noExpensesToExport.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses to export for this month'**
+  String get noExpensesToExport;
+
+  /// No description provided for @failedToGeneratePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to generate PDF: {error}'**
+  String failedToGeneratePdf(String error);
+
+  /// No description provided for @budgetSetSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly budget set to {amount} DT'**
+  String budgetSetSuccess(String amount);
+
+  /// No description provided for @budgetDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget tracking disabled'**
+  String get budgetDisabled;
+
+  /// No description provided for @enterAmountOrZero.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an amount or 0 to disable'**
+  String get enterAmountOrZero;
+
+  /// No description provided for @enterValidNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid number'**
+  String get enterValidNumber;
+
+  /// No description provided for @budgetCannotBeNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget cannot be negative'**
+  String get budgetCannotBeNegative;
+
+  /// No description provided for @failedToSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save: {error}'**
+  String failedToSave(String error);
+
+  /// No description provided for @categoryAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get categoryAll;
+
+  /// No description provided for @categoryFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get categoryFood;
+
+  /// No description provided for @categoryHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get categoryHealth;
+
+  /// No description provided for @categoryShopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get categoryShopping;
+
+  /// No description provided for @categoryTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transport'**
+  String get categoryTransport;
+
+  /// No description provided for @categoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get categoryOther;
+
+  /// No description provided for @monthJanuary.
+  ///
+  /// In en, this message translates to:
+  /// **'January'**
+  String get monthJanuary;
+
+  /// No description provided for @monthFebruary.
+  ///
+  /// In en, this message translates to:
+  /// **'February'**
+  String get monthFebruary;
+
+  /// No description provided for @monthMarch.
+  ///
+  /// In en, this message translates to:
+  /// **'March'**
+  String get monthMarch;
+
+  /// No description provided for @monthApril.
+  ///
+  /// In en, this message translates to:
+  /// **'April'**
+  String get monthApril;
+
+  /// No description provided for @monthMay.
+  ///
+  /// In en, this message translates to:
+  /// **'May'**
+  String get monthMay;
+
+  /// No description provided for @monthJune.
+  ///
+  /// In en, this message translates to:
+  /// **'June'**
+  String get monthJune;
+
+  /// No description provided for @monthJuly.
+  ///
+  /// In en, this message translates to:
+  /// **'July'**
+  String get monthJuly;
+
+  /// No description provided for @monthAugust.
+  ///
+  /// In en, this message translates to:
+  /// **'August'**
+  String get monthAugust;
+
+  /// No description provided for @monthSeptember.
+  ///
+  /// In en, this message translates to:
+  /// **'September'**
+  String get monthSeptember;
+
+  /// No description provided for @monthOctober.
+  ///
+  /// In en, this message translates to:
+  /// **'October'**
+  String get monthOctober;
+
+  /// No description provided for @monthNovember.
+  ///
+  /// In en, this message translates to:
+  /// **'November'**
+  String get monthNovember;
+
+  /// No description provided for @monthDecember.
+  ///
+  /// In en, this message translates to:
+  /// **'December'**
+  String get monthDecember;
 }
 
 class _AppLocalizationsDelegate

@@ -1,4 +1,3 @@
-// core/widgets/budget_progress.dart
 import 'package:expense_tracker/core/router/app.routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +5,7 @@ import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/providers/preferences_provider.dart';
 import 'package:expense_tracker/providers/month_provider.dart';
 import 'package:go_router/go_router.dart';
+import '../../l10n/app_localizations.dart';
 
 class BudgetProgress extends ConsumerWidget {
   final List<Expense> allExpenses;
@@ -15,8 +15,10 @@ class BudgetProgress extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final budget = ref.watch(monthlyBudgetProvider);
     final currentMonth = ref.watch(monthProvider);
+
     if (budget <= 0) {
       return _SetBudgetPrompt();
     }
@@ -26,7 +28,6 @@ class BudgetProgress extends ConsumerWidget {
     }).toList();
 
     final totalSpent = monthlyExpenses.fold(0.0, (sum, e) => sum + e.amount);
-
     final progress = (totalSpent / budget).clamp(0.0, 1.0);
     final percentage = (progress * 100).toStringAsFixed(0);
 
@@ -34,13 +35,13 @@ class BudgetProgress extends ConsumerWidget {
     String statusText;
     if (progress < 0.7) {
       progressColor = Colors.green;
-      statusText = 'On track';
+      statusText = l10n.onTrack;
     } else if (progress < 0.9) {
       progressColor = Colors.orange;
-      statusText = 'Getting close';
+      statusText = l10n.gettingClose;
     } else {
       progressColor = Colors.red;
-      statusText = progress >= 1.0 ? 'Budget exceeded!' : 'Almost at limit';
+      statusText = progress >= 1.0 ? l10n.budgetExceeded : l10n.almostAtLimit;
     }
 
     return Container(
@@ -57,21 +58,14 @@ class BudgetProgress extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Monthly Budget',
-                style: theme.textTheme.titleLarge,
-              ),
+              Text(l10n.monthlyBudget, style: theme.textTheme.titleLarge),
               Text(
                 statusText,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: progressColor,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: theme.textTheme.bodySmall?.copyWith(color: progressColor, fontWeight: FontWeight.bold),
               ),
             ],
           ),
           const SizedBox(height: 16),
-
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
@@ -86,14 +80,12 @@ class BudgetProgress extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${totalSpent.toStringAsFixed(3)} DT spent',
+                '${totalSpent.toStringAsFixed(3)} DT ${l10n.spent}',
                 style: theme.textTheme.bodyMedium,
               ),
               Text(
-                '${percentage}% of ${budget.toStringAsFixed(3)} DT',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                l10n.ofBudget(percentage, budget.toStringAsFixed(3)),
+                style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -103,11 +95,11 @@ class BudgetProgress extends ConsumerWidget {
   }
 }
 
-
 class _SetBudgetPrompt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -119,42 +111,21 @@ class _SetBudgetPrompt extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.savings_outlined,
-            color: theme.colorScheme.primary,
-            size: 32,
-          ),
+          Icon(Icons.savings_outlined, color: theme.colorScheme.primary, size: 32),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Set a Monthly Budget',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text(l10n.setMonthlyBudget, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
-                Text(
-                  'Track your spending limits and get alerts',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.outline,
-                  ),
-                ),
+                Text(l10n.trackSpendingLimits, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.outline)),
               ],
             ),
           ),
-
           IconButton(
-            onPressed: () {
-context.push(AppRoutes.settings);
-            },
-            icon: Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: theme.colorScheme.primary,
-            ),
+            onPressed: () => context.push(AppRoutes.settings),
+            icon: Icon(Icons.arrow_forward_ios, size: 16, color: theme.colorScheme.primary),
           ),
         ],
       ),
