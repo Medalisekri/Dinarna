@@ -96,7 +96,7 @@ class PdfService {
               pw.Text(
                 textAlign: pw.TextAlign.right,
                 l10n.pdfMonthlyReport,
-                style: pw.TextStyle(fontSize: 12, color: PdfColors.grey700),
+                style: pw.TextStyle(fontSize: 12, color: PdfColors.grey700 , wordSpacing: 2),
               ),
               ],
           ),

@@ -2,7 +2,7 @@
 {
   "@@locale": "ar",
 
-  "appTitle": "GlassVault",
+  "appTitle": "دينارنا",
 
   "loginTitle": "مرحبا بيك",
   "email": "البريد الإلكتروني",
@@ -74,9 +74,9 @@
   "budgetExceeded": "تجاوزت الميزانية!",
   "setMonthlyBudget": "حدّد ميزانية شهرية",
   "trackSpendingLimits": "تبع حدود الصرف متاعك و خوذ تنبيهات",
-  "spent": "تم صرفه",
+  "spent": "دينار تم صرفه",
   "ofBudget": "{percentage}% من {budget} دينار",
-
+  "curr": "دينار",
   "spendingByCategory": "الصرف حسب الفئة",
 
   "emailRequired": "الإيميل مطلوب",
@@ -107,7 +107,7 @@
   "pdfCategory": "الفئة",
   "pdfNote": "ملاحظة",
   "pdfAmount": "المبلغ",
-  "generatedBy": "تم إنشاؤه بواسطة GlassVault",
+  "generatedBy": "تم إنشاؤه بواسطة دينارنا",
   "noExpensesToExport": "ما عندكش مصاريف باش تصدّرها هذا الشهر",
   "failedToGeneratePdf": "فشل إنشاء ملف PDF: {error}",
 

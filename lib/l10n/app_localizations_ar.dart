@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'GlassVault';
+  String get appTitle => 'دينارنا';
 
   @override
   String get loginTitle => 'مرحبا بيك';
@@ -209,7 +209,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get trackSpendingLimits => 'تبع حدود الصرف متاعك و خوذ تنبيهات';
 
   @override
-  String get spent => 'تم صرفه';
+  String get spent => 'دينار تم صرفه';
+
+  @override
+  String get curr => 'دينار';
 
   @override
   String ofBudget(String percentage, String budget) {
@@ -298,7 +301,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pdfAmount => 'المبلغ';
 
   @override
-  String get generatedBy => 'تم إنشاؤه بواسطة GlassVault';
+  String get generatedBy => 'تم إنشاؤه بواسطة دينارنا';
 
   @override
   String get noExpensesToExport => 'ما عندكش مصاريف باش تصدّرها هذا الشهر';

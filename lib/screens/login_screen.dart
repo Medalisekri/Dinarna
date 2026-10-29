@@ -186,8 +186,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           letterSpacing: -0.5,
                         ),
                         children: [
-                          TextSpan(text: 'Glass', style: TextStyle(color: theme.colorScheme.onSurface)),
-                          TextSpan(text: 'Vault', style: TextStyle(color: theme.colorScheme.primary)),
+                          TextSpan(text: 'Dinar', style: TextStyle(color: theme.colorScheme.onSurface)),
+                          TextSpan(text: 'na', style: TextStyle(color: theme.colorScheme.primary)),
                         ],
                       ),
                     ),

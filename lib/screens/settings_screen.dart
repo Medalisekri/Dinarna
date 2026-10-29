@@ -169,7 +169,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       Text(l10n.currentBudget, style: theme.textTheme.bodyMedium),
                       Text(
-                        currentBudget > 0 ? '${currentBudget.toStringAsFixed(3)} DT' : l10n.notSet,
+                        currentBudget > 0 ? '${currentBudget.toStringAsFixed(3)} ${l10n.curr}' : l10n.notSet,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: currentBudget > 0 ? theme.colorScheme.primary : theme.colorScheme.outline,
@@ -184,9 +184,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: [100.0, 200.0, 500.0, 1000.0].map((amount) {
+                    children: [500.0, 1000.0, 1500.0, 2000.0, 2500.0].map((amount) {
                       return ActionChip(
-                        label: Text('${amount.toInt()} DT'),
+                        label: Text('${amount.toInt()} ${l10n.curr}'),
                         onPressed: () {
                           _budgetController.text = amount.toString();
                           setState(() {});

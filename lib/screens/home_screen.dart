@@ -111,7 +111,7 @@ Future<void> _exportPdf(BuildContext context, WidgetRef ref) async {
 
     await Printing.layoutPdf(
       onLayout: (format) async => pdfBytes,
-      name: 'GlassVault_$monthLabel.pdf',
+      name: 'Dinarna_$monthLabel.pdf',
     );
   } catch (e) {
     if (context.mounted) {
@@ -479,7 +479,7 @@ class _SummaryCard extends StatelessWidget {
                 curve: Curves.easeOutCubic,
                 builder: (context, value, _) {
                   return Text(
-                    '${value.toStringAsFixed(3)} DT',
+                    '${value.toStringAsFixed(3)} ${l10n.curr}',
                     style: theme.textTheme.headlineSmall?.copyWith(
                       color: theme.colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
@@ -661,7 +661,7 @@ class _SwipeableExpenseTile extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '-${expense.amount.toStringAsFixed(3)} DT',
+                  '-${expense.amount.toStringAsFixed(3)} ${l10n.curr}',
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: theme.colorScheme.error,

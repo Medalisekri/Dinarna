@@ -80,7 +80,7 @@ class BudgetProgress extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${totalSpent.toStringAsFixed(3)} DT ${l10n.spent}',
+                '${totalSpent.toStringAsFixed(3)}  ${l10n.spent}',
                 style: theme.textTheme.bodyMedium,
               ),
               Text(

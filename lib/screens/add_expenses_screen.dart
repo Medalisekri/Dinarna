@@ -260,14 +260,10 @@ class _SaveButtonState extends State<_SaveButton> {
         height: 20,
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          color: theme.colorScheme.onPrimary,
         ),
       )
           : Text(
         widget.isEditing ? l10n.updateExpense : l10n.addExpense,
-        style: theme.textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-        ),
       ),
     );
   }
