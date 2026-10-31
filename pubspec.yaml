@@ -58,11 +58,8 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "lib/core/assets/images/logo.png" # Utilisé pour iOS (qui va remplir la transparence en blanc/noir) et l'ancien Android
-
-  # Configuration pour les versions récentes d'Android (Adaptive Icons)
-  adaptive_icon_background: "#FFFFFF" # 👈 Remplacez par votre code couleur HEX (ex: #000000, #FFFFFF, etc.)
-  adaptive_icon_foreground: "lib/core/assets/images/logo.png"
+  image_path: "lib/core/assets/images/logo.png"
+  adaptive_icon_background: "#FFFFFF"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

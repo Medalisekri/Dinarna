@@ -42,6 +42,7 @@
   "amountLabel": "المبلغ (دينار)",
   "category": "الفئة",
   "date": "التاريخ",
+  "next": "التالي",
   "noteOptional": "ملاحظة (اختياري)",
   "updateExpense": "تعديل المصروف",
   "noNote": "بدون ملاحظة",

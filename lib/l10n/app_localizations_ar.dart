@@ -118,6 +118,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get date => 'التاريخ';
 
   @override
+  String get next => 'التالي';
+
+  @override
   String get noteOptional => 'ملاحظة (اختياري)';
 
   @override

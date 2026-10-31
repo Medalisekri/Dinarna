@@ -53,6 +53,7 @@
   "amountLabel": "Amount (DT)",
   "category": "Category",
   "date": "Date",
+  "next": "Next",
   "noteOptional": "Note (Optional)",
   "updateExpense": "Update Expense",
   "noNote": "No note",

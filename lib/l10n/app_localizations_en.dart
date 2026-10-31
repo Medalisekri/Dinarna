@@ -118,6 +118,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get date => 'Date';
 
   @override
+  String get next => 'Next';
+
+  @override
   String get noteOptional => 'Note (Optional)';
 
   @override

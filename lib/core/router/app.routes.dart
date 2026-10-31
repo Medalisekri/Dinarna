@@ -7,4 +7,6 @@ class AppRoutes {
   static const String settings = '/settings';
   static const String budget = '/budget';
   static const String export = '/export';
+  static const String onboarding = '/onboarding';
+  static const String language = '/language-selection';
 }
