@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -39,12 +40,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _emailController.text.trim(),
       _passwordController.text.trim(),
     );
-    context.go(AppRoutes.home);
+    final result = ref.read(authProvider);
+    if (result.hasError) return;
+    if (FirebaseAuth.instance.currentUser != null) {
+      context.go(AppRoutes.home);
+    }
   }
 
   Future<void> _googleSignIn() async {
     await ref.read(authProvider.notifier).googleSignIn();
-    context.go(AppRoutes.home);
+    final result = ref.read(authProvider);
+    if (result.hasError) return;
+    if (FirebaseAuth.instance.currentUser != null) {
+      context.go(AppRoutes.home);
+    }
   }
 
   void _showResetDialog() {

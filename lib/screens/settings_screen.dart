@@ -1,8 +1,10 @@
+import 'package:expense_tracker/core/router/app.routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_tracker/providers/preferences_provider.dart';
+import 'package:go_router/go_router.dart';
 import '../l10n/app_localizations.dart';
 
 
@@ -122,6 +124,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           }
 
           await user.delete();
+          context.go(AppRoutes.login);
         }
       } catch (e) {
         if (mounted) {
@@ -288,6 +291,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   title: Text(l10n.logout),
                   onTap: () async {
                     await FirebaseAuth.instance.signOut();
+                    context.go(AppRoutes.login);
                   },
                 ),
                 const Divider(height: 1),
@@ -297,6 +301,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   subtitle: Text(l10n.permanentlyEraseData),
                   onTap: _isDeleting ? null : _deleteAccount,
                   trailing: _isDeleting ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : null,
+
                 ),
               ],
             ),
