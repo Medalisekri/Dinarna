@@ -63,6 +63,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                   isSelected: currentLocale.languageCode == 'ar',
                   onTap: () async {
                     ref.read(localeProvider.notifier).setLanguage('ar');
+                    ref.read(localeProvider.notifier).setLanguage('ar');
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.setBool('selected_language', true);
 

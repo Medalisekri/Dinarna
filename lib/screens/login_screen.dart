@@ -39,10 +39,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _emailController.text.trim(),
       _passwordController.text.trim(),
     );
+    context.go(AppRoutes.home);
   }
 
   Future<void> _googleSignIn() async {
     await ref.read(authProvider.notifier).googleSignIn();
+    context.go(AppRoutes.home);
   }
 
   void _showResetDialog() {
@@ -198,7 +200,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: InputDecoration(
                         labelText: l10n.email,
                         prefixIcon: const Icon(Icons.email_outlined),

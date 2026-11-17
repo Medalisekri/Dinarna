@@ -1,3 +1,4 @@
+import 'package:expense_tracker/core/router/app.routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -40,6 +41,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       _emailController.text.trim(),
       _passwordController.text.trim(),
     );
+    context.go(AppRoutes.login);
   }
 
   @override
@@ -96,7 +98,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     Text(l10n.createAccountSubtitle, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.outline)),
                     const SizedBox(height: 40),
 
-                    // Email
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -113,7 +114,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Password
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
@@ -134,7 +134,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Confirm Password
                     TextFormField(
                       controller: _confirmPasswordController,
                       obscureText: _obscurePassword,
@@ -149,14 +148,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       },
                     ),
                     const SizedBox(height: 24),
-
-                    // Error Message
                     if (_generalError != null) ...[
                       Text(_generalError!, style: TextStyle(color: theme.colorScheme.error, fontSize: 14)),
                       const SizedBox(height: 16),
                     ],
 
-                    // Sign Up Button
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(
@@ -172,7 +168,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     ),
                     const SizedBox(height: 40),
 
-                    // Login Link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
