@@ -24,7 +24,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get forgotPassword => 'نسيت كلمة السر؟';
 
   @override
-  String get login => 'دخول';
+  String get login => 'تسجيل دخول';
 
   @override
   String get or => 'أو';
@@ -259,7 +259,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorTooManyRequests => 'محاولات برشا. عاود حاول من بعد.';
 
   @override
-  String get errorLoginFailed => 'الدخول فشل. شوف الاتصال متاعك.';
+  String get errorLoginFailed => 'تسجل الدخول فشل. عاود حاول.';
 
   @override
   String get errorWeakPassword => 'كلمة السر ضعيفة. استعمل 6 أحرف على الأقل.';

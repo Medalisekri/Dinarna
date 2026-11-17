@@ -190,18 +190,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text.rich(
-                      TextSpan(
-                        style: theme.textTheme.headlineLarge?.copyWith(
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: -0.5,
-                        ),
-                        children: [
-                          TextSpan(text: 'Dinar', style: TextStyle(color: theme.colorScheme.onSurface)),
-                          TextSpan(text: 'na', style: TextStyle(color: theme.colorScheme.primary)),
-                        ],
-                      ),
-                    ),
+                   Text(l10n.appTitle,
+                     style: theme.textTheme.headlineSmall?.copyWith(
+                     fontWeight: FontWeight.bold,
+                     color: theme.colorScheme.onSurface,
+                   ),),
                     const SizedBox(height: 8),
                     Text(l10n.loginTitle, style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.outline)),
                     const SizedBox(height: 40),
