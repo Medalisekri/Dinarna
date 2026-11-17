@@ -1,6 +1,6 @@
-# 💸 GlassVault — Expense Tracker
+# 💸 Dinarna — Expense Tracker
 
-> A production-ready personal finance app built with Flutter and Firebase. Track daily expenses, set monthly budgets, visualize spending patterns, and export professional PDF reports — with full English and Tunisian Arabic support.
+> A finance app built with Flutter and Firebase. Track daily expenses, set monthly budgets, visualize spending patterns, and export professional PDF reports — with full English and Tunisian Arabic support.
 
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
@@ -12,13 +12,9 @@
 
 ## Screenshots
 
-| Login | Home | Add Expense |
-|---|---|---|
-| <img width="200" height="400" alt="Login" src="https://github.com/user-attachments/assets/dfa3c624-ecca-46c6-ba4e-5a24b19905dc" /> | <img width="200" height="400" alt="Home" src="https://github.com/user-attachments/assets/91b36029-9d7d-4e28-9a7c-966720c63c84" /> | <img width="200" height="400" alt="Add Expense" src="https://github.com/user-attachments/assets/e251da67-ece6-44ab-80f5-def0e08ac31b" /> |
-
-| Budget & Chart | Settings | Arabic (RTL) |
-|---|---|---|
-| *Coming soon* | *Coming soon* | *Coming soon* |
+| Login | Home | Add Expense | Settings |
+|---|---|---|---|
+|<img width="200" height="400" alt="login" src="https://github.com/user-attachments/assets/173d3ba7-eaba-4d8c-9654-0530c4f9fbb8" />| <img width="200" height="400" alt="Home" src="https://github.com/user-attachments/assets/bf356966-a688-4aa4-8cfa-512519f83a15" />|<img width="200" height="400" alt="Add dep" src="https://github.com/user-attachments/assets/6ab6898c-77ff-4dd4-82af-170b0a6e3723" />|<img width="200" height="400" alt="settings" src="https://github.com/user-attachments/assets/1051e236-4724-44cc-bc8f-3e294df58802" />|
 
 ---
 
