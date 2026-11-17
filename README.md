@@ -14,7 +14,7 @@
 
 | Login | Home | Add Expense | Settings |
 |---|---|---|---|
-|<img width="200" height="400" alt="login" src="https://github.com/user-attachments/assets/173d3ba7-eaba-4d8c-9654-0530c4f9fbb8" />| <img width="200" height="400" alt="Home" src="https://github.com/user-attachments/assets/bf356966-a688-4aa4-8cfa-512519f83a15" />|<img width="200" height="400" alt="Add dep" src="https://github.com/user-attachments/assets/6ab6898c-77ff-4dd4-82af-170b0a6e3723" />|<img width="200" height="400" alt="settings" src="https://github.com/user-attachments/assets/1051e236-4724-44cc-bc8f-3e294df58802" />|
+|<img width="200" height="400" alt="log" src="https://github.com/user-attachments/assets/8e8ca4d4-8b50-4f84-984b-75621ac96a98" />| <img width="200" height="400" alt="Home" src="https://github.com/user-attachments/assets/bf356966-a688-4aa4-8cfa-512519f83a15" />|<img width="200" height="400" alt="Add dep" src="https://github.com/user-attachments/assets/6ab6898c-77ff-4dd4-82af-170b0a6e3723" />|<img width="200" height="400" alt="settings" src="https://github.com/user-attachments/assets/1051e236-4724-44cc-bc8f-3e294df58802" />|
 
 ---
 
